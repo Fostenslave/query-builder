@@ -1,0 +1,25 @@
+{
+    "name": "simple-orm/query-builder",
+    "version": "0.1",
+    "description": "Simple query builder",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.5",
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SimpleORM\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SimpleORM\\Tests\\": "tests/"
+        }
+    }
+}

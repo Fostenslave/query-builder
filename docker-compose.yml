@@ -1,0 +1,9 @@
+services:
+  simple-orm:
+    build: .
+    container_name: "simple-orm"
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+    stdin_open: true
