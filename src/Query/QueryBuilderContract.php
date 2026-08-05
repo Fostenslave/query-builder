@@ -4,14 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleORM\Query;
 
-/**
- * Строит SELECT-запрос через fluent-интерфейс.
- *
- * Чистая логика — не выполняет запрос и не обращается к БД.
- * Результат: собранный запрос (через Grammar).
- *
- * Реализация: в src/Query/QueryBuilder.php.
- */
+
 interface QueryBuilderContract
 {
     /**
@@ -150,11 +143,15 @@ interface QueryBuilderContract
     public function selectRaw(string $expression): static;
 
     /**
-     * Добавляет условие WHERE с сырым SQL-выражением (без плейсхолдеров).
+     * Добавляет условие WHERE с сырым SQL-выражением.
      *
-     * @param string $sql  Сырой SQL ('created_at > NOW()' — но для SQLite: 'age > 18')
+     * Для динамических значений используйте ? и $bindings:
+     *   whereRaw('age > ?', [$minAge])
+     *
+     * @param string $sql       Сырой SQL ('age > ?', 'age > ? AND active = ?').
+     * @param array  $bindings  Значения для ? — в порядке следования.
      */
-    public function whereRaw(string $sql): static;
+    public function whereRaw(string $sql, array $bindings = []): static;
 
     /**
      * Возвращает количество строк запроса (SELECT COUNT(*)).

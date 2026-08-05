@@ -77,7 +77,7 @@ class MysqlGrammarCompileTest extends TestCase
             offset: null,
         );
 
-        $this->assertSame('SELECT id, name FROM `users` WHERE age > :where_0 LIMIT 10', $compiled->sql);
+        $this->assertSame('SELECT id, name FROM `users` WHERE `age` > :where_0 LIMIT 10', $compiled->sql);
         $this->assertSame([':where_0' => 18], $compiled->bindings);
     }
 
@@ -100,7 +100,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileInsert('users', ['name' => 'Alice', 'age' => 30]);
 
-        $this->assertSame('INSERT INTO `users` (name, age) VALUES (:val_0, :val_1)', $compiled->sql);
+        $this->assertSame('INSERT INTO `users` (`name`, `age`) VALUES (:val_0, :val_1)', $compiled->sql);
         $this->assertSame([':val_0' => 'Alice', ':val_1' => 30], $compiled->bindings);
     }
 
@@ -112,7 +112,7 @@ class MysqlGrammarCompileTest extends TestCase
             [new WhereClause('id', '=', 1)],
         );
 
-        $this->assertSame('UPDATE `users` SET name = :set_0 WHERE id = :where_0', $compiled->sql);
+        $this->assertSame('UPDATE `users` SET `name` = :set_0 WHERE `id` = :where_0', $compiled->sql);
         $this->assertSame([':set_0' => 'Bob', ':where_0' => 1], $compiled->bindings);
     }
 
@@ -123,7 +123,7 @@ class MysqlGrammarCompileTest extends TestCase
             [new WhereClause('id', '=', 1)],
         );
 
-        $this->assertSame('DELETE FROM `users` WHERE id = :where_0', $compiled->sql);
+        $this->assertSame('DELETE FROM `users` WHERE `id` = :where_0', $compiled->sql);
         $this->assertSame([':where_0' => 1], $compiled->bindings);
     }
 
@@ -131,5 +131,20 @@ class MysqlGrammarCompileTest extends TestCase
     public function testGetCountExpression(): void
     {
         $this->assertSame('count(*)', $this->grammar->getCountExpression());
+    }
+
+    public function testCompileSelectEscapesBacktickInTableName(): void
+    {
+        $compiled = $this->grammar->compileSelect(
+            table: 'na`ve',
+            columns: [],
+            joins: [],
+            wheres: [],
+            orderBys: [],
+            limit: null,
+            offset: null,
+        );
+
+        $this->assertSame('SELECT * FROM `na``ve`', $compiled->sql);
     }
 }

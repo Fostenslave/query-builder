@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SimpleORM\Query;
 
-final readonly class JoinClause
+use SimpleORM\Grammar\Grammar;
+
+final readonly class JoinClause implements Compilable
 {
     private const array ALLOWED_OPERATORS = ['=', '<', '>', '>=', '<=', '<>', '!='];
 
@@ -21,5 +23,13 @@ final readonly class JoinClause
                 . '". Allowed: ' . implode(', ', self::ALLOWED_OPERATORS),
             );
         }
+    }
+
+    public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
+    {
+        $joinType = $this->type->value;
+        $wrappedTable = $grammar->wrapTable($this->table);
+
+        return new CompiledQuery("$joinType JOIN $wrappedTable ON $this->left $this->operator $this->right", []);
     }
 }

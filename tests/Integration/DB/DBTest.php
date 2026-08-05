@@ -131,20 +131,9 @@ class DBTest extends TestCase
         $this->assertSame('Alice', $row['name']);
     }
 
-    public function testCompileStillWorks(): void
-    {
-        // compile() должен работать как раньше — возвращает CompiledQuery
-        $compiled = $this->db->table('users')
-            ->where('age', '>', 18)
-            ->compile();
-
-        $this->assertSame('SELECT * FROM "users" WHERE age > :where_0', $compiled->sql);
-        $this->assertSame([':where_0' => 18], $compiled->bindings);
-    }
 
     public function testMultipleQueriesAreIndependent(): void
     {
-        // Каждый table() — новый QueryBuilder, состояние не утекает
         $rows1 = $this->db->table('users')->where('age', '>', 20)->get();
         $rows2 = $this->db->table('users')->get();
 

@@ -13,7 +13,7 @@ class MysqlGrammar extends BaseGrammar implements Grammar
             return '*';
         }
 
-        return '`' . str_replace('"', '""', $value) . '`';
+        return '`' . str_replace('`', '``', $value) . '`';
     }
 
     public function getCountExpression(): string

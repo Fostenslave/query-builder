@@ -27,7 +27,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileInsert(['name' => 'Alice', 'age' => 30]);
 
         $this->assertSame(
-            'INSERT INTO "users" (name, age) VALUES (:val_0, :val_1)',
+            'INSERT INTO "users" ("name", "age") VALUES (:val_0, :val_1)',
             $compiled->sql,
         );
         $this->assertSame([':val_0' => 'Alice', ':val_1' => 30], $compiled->bindings);
@@ -39,7 +39,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileInsert(['name' => 'Bob', 'age' => 25, 'active' => 1]);
 
         $this->assertSame(
-            'INSERT INTO "users" (name, age, active) VALUES (:val_0, :val_1, :val_2)',
+            'INSERT INTO "users" ("name", "age", "active") VALUES (:val_0, :val_1, :val_2)',
             $compiled->sql,
         );
         $this->assertSame(
@@ -57,7 +57,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileUpdate(['name' => 'Bob']);
 
         $this->assertSame(
-            'UPDATE "users" SET name = :set_0 WHERE id = :where_0',
+            'UPDATE "users" SET "name" = :set_0 WHERE "id" = :where_0',
             $compiled->sql,
         );
         $this->assertSame(
@@ -74,7 +74,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileUpdate(['name' => 'Bob', 'age' => 25]);
 
         $this->assertSame(
-            'UPDATE "users" SET name = :set_0, age = :set_1 WHERE age > :where_0 AND active = :where_1',
+            'UPDATE "users" SET "name" = :set_0, "age" = :set_1 WHERE "age" > :where_0 AND "active" = :where_1',
             $compiled->sql,
         );
         $this->assertSame(
@@ -89,7 +89,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileUpdate(['name' => 'Bob']);
 
         $this->assertSame(
-            'UPDATE "users" SET name = :set_0',
+            'UPDATE "users" SET "name" = :set_0',
             $compiled->sql,
         );
         $this->assertSame([':set_0' => 'Bob'], $compiled->bindings);
@@ -102,7 +102,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileDelete();
 
         $this->assertSame(
-            'DELETE FROM "users" WHERE id = :where_0',
+            'DELETE FROM "users" WHERE "id" = :where_0',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 1], $compiled->bindings);
@@ -116,7 +116,7 @@ class QueryBuilderWriteCompileTest extends TestCase
             ->compileDelete();
 
         $this->assertSame(
-            'DELETE FROM "users" WHERE age < :where_0 AND active = :where_1',
+            'DELETE FROM "users" WHERE "age" < :where_0 AND "active" = :where_1',
             $compiled->sql,
         );
         $this->assertSame(

@@ -81,8 +81,8 @@ class QueryBuilderJoinCompileTest extends TestCase
         $this->assertSame(
             'SELECT * FROM "users"'
             . ' INNER JOIN "posts" ON users.id = posts.user_id'
-            . ' WHERE users.age > :where_0'
-            . ' ORDER BY posts.created_at DESC',
+            . ' WHERE "users"."age" > :where_0'
+            . ' ORDER BY "posts"."created_at" DESC',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 18], $compiled->bindings);

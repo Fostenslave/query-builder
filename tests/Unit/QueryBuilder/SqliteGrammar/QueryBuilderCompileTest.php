@@ -41,7 +41,7 @@ class QueryBuilderCompileTest extends TestCase
         $qb = new QueryBuilder($this->grammar, 'users');
         $compiled = $qb->where('id', '=', 1)->compile();
 
-        $this->assertSame('SELECT * FROM "users" WHERE id = :where_0', $compiled->sql);
+        $this->assertSame('SELECT * FROM "users" WHERE "id" = :where_0', $compiled->sql);
         $this->assertSame([':where_0' => 1], $compiled->bindings);
     }
 
@@ -52,10 +52,22 @@ class QueryBuilderCompileTest extends TestCase
            ->where('name', '=', 'Alice')->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" WHERE age > :where_0 AND name = :where_1',
+            'SELECT * FROM "users" WHERE "age" > :where_0 AND "name" = :where_1',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 18, ':where_1' => 'Alice'], $compiled->bindings);
+    }
+
+    public function testWhereDottedColumnIsWrapped(): void
+    {
+        $qb = new QueryBuilder($this->grammar, 'users');
+        $compiled = $qb->where('users.age', '>', 18)->compile();
+
+        $this->assertSame(
+            'SELECT * FROM "users" WHERE "users"."age" > :where_0',
+            $compiled->sql,
+        );
+        $this->assertSame([':where_0' => 18], $compiled->bindings);
     }
 
     public function testOrderByAsc(): void
@@ -63,7 +75,7 @@ class QueryBuilderCompileTest extends TestCase
         $qb = new QueryBuilder($this->grammar, 'users');
         $compiled = $qb->orderBy('name', 'ASC')->compile();
 
-        $this->assertSame('SELECT * FROM "users" ORDER BY name ASC', $compiled->sql);
+        $this->assertSame('SELECT * FROM "users" ORDER BY "name" ASC', $compiled->sql);
     }
 
     public function testOrderByDesc(): void
@@ -71,7 +83,18 @@ class QueryBuilderCompileTest extends TestCase
         $qb = new QueryBuilder($this->grammar, 'users');
         $compiled = $qb->orderBy('age', 'DESC')->compile();
 
-        $this->assertSame('SELECT * FROM "users" ORDER BY age DESC', $compiled->sql);
+        $this->assertSame('SELECT * FROM "users" ORDER BY "age" DESC', $compiled->sql);
+    }
+
+    public function testOrderByDottedColumnIsWrapped(): void
+    {
+        $qb = new QueryBuilder($this->grammar, 'users');
+        $compiled = $qb->orderBy('posts.created_at', 'DESC')->compile();
+
+        $this->assertSame(
+            'SELECT * FROM "users" ORDER BY "posts"."created_at" DESC',
+            $compiled->sql,
+        );
     }
 
     public function testLimit(): void
@@ -104,7 +127,7 @@ class QueryBuilderCompileTest extends TestCase
         $compiled = $qb->compile();
 
         $this->assertSame(
-            'SELECT id, name FROM "users" WHERE age >= :where_0 AND active = :where_1 ORDER BY name ASC LIMIT 5 OFFSET 10',
+            'SELECT id, name FROM "users" WHERE "age" >= :where_0 AND "active" = :where_1 ORDER BY "name" ASC LIMIT 5 OFFSET 10',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 18, ':where_1' => true], $compiled->bindings);

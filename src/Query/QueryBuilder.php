@@ -187,10 +187,10 @@ class QueryBuilder implements QueryBuilderContract
     }
 
 
-    public function whereRaw(string $sql): static
+    public function whereRaw(string $sql, array $bindings = []): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new RawClause($sql);
+        $builder->wheres[] = new RawClause($sql, $bindings);
         return $builder;
     }
 

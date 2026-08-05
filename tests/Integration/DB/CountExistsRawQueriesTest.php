@@ -175,4 +175,61 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertCount(2, $rows);
         $this->assertSame(['Alice', 'Dave'], array_column($rows, 'name'));
     }
+
+    public function testWhereRawWithBindingSingleParam(): void
+    {
+        $rows = $this->db->table('users')
+            ->whereRaw('age > ?', [20])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $this->assertCount(4, $rows);
+        $this->assertSame(['Alice', 'Charlie', 'Dave', 'Eve'], array_column($rows, 'name'));
+    }
+
+    public function testWhereRawWithMultipleBindings(): void
+    {
+        $rows = $this->db->table('users')
+            ->whereRaw('age > ? AND age < ?', [20, 29])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $this->assertCount(2, $rows);
+        $this->assertSame(['Charlie', 'Eve'], array_column($rows, 'name'));
+    }
+
+    public function testWhereRawBindingMixedWithRegularWhere(): void
+    {
+        $rows = $this->db->table('users')
+            ->where('active', '=', 1)
+            ->whereRaw('age > ?', [20])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $this->assertCount(2, $rows);
+        $this->assertSame(['Alice', 'Dave'], array_column($rows, 'name'));
+    }
+
+    public function testWhereRawWithBindingPreventsSqlInjection(): void
+    {
+        $rows = $this->db->table('users')
+            ->whereRaw('age > ?', ["18; DROP TABLE users; --"])
+            ->get();
+
+        // Таблица не удалена — значение не вклеилось в SQL
+        $this->assertSame(5, $this->db->table('users')->count());
+        // Сравнение age > "18..." в SQLite даёт false — нет rows
+        $this->assertCount(0, $rows);
+    }
+
+    public function testWhereRawWithoutBackwardCompat(): void
+    {
+        // Старый вызов без bindings — должен работать как раньше
+        $rows = $this->db->table('users')
+            ->whereRaw('age > 20')
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $this->assertCount(4, $rows);
+    }
 }
