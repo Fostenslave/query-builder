@@ -24,7 +24,7 @@ class QueryBuilderTest extends TestCase
     {
         $qb = new QueryBuilder($this->grammar, 'users');
 
-        $qb->select('column1', 'column2', 'column3');
+        $qb = $qb->select('column1', 'column2', 'column3');
         $this->assertEquals(['column1', 'column2', 'column3'], $qb->columns);
     }
 
@@ -32,7 +32,7 @@ class QueryBuilderTest extends TestCase
     {
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);
-        $qb
+        $qb = $qb
             ->where('name', '=' , 'John Doe')
             ->where('age', '>', 20)
             ->whereEquals('email', 'test@domain.com');
@@ -55,7 +55,7 @@ class QueryBuilderTest extends TestCase
     {
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);
-        $qb
+        $qb = $qb
             ->orderBy('age', 'DESC')
             ->orderBy('number');
 
@@ -82,14 +82,14 @@ class QueryBuilderTest extends TestCase
     public function testLimit(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->limit(10);
+        $qb = $qb->limit(10);
         $this->assertEquals(10, $qb->limitValue);
     }
 
     public function testLimitAndOffset(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->limit(10)->offset(20);
+        $qb = $qb->limit(10)->offset(20);
         $this->assertEquals(10, $qb->limitValue);
         $this->assertEquals(20, $qb->offsetValue);
     }
@@ -98,8 +98,7 @@ class QueryBuilderTest extends TestCase
     {
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);
-        $qb
-            ->select('column1', 'column2', 'column3')
+        $qb = $qb->select('column1', 'column2', 'column3')
             ->where('name', '=' , 'John Doe')
             ->where('age', '>', 20)
             ->whereEquals('email', 'test@domain.com')

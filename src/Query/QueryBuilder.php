@@ -10,7 +10,6 @@ class QueryBuilder implements QueryBuilderContract
 {
 
     private(set) array $columns = [];
-    private(set) array $rawColumns = [];
 
     /**
      * @var array<JoinClause> $joins
@@ -18,7 +17,7 @@ class QueryBuilder implements QueryBuilderContract
     private(set) array $joins = [];
 
     /**
-     * @var array<WhereClause> $wheres
+     * @var array<WhereClause|RawClause> $wheres
      */
     private(set) array $wheres = [];
 
@@ -32,7 +31,7 @@ class QueryBuilder implements QueryBuilderContract
 
     public function __construct(
         private(set) readonly Grammar   $grammar,
-        private(set) string             $table,
+        private(set) readonly string    $table,
         private readonly ?QueryExecutor $executor = null,
     )
     {
@@ -40,30 +39,35 @@ class QueryBuilder implements QueryBuilderContract
 
     public function from(string $tableName): static
     {
-        $this->table = $tableName;
-        return $this;
+        return clone($this, [
+            "table" => $tableName
+        ]);
     }
 
     public function select(string ...$columns): static
     {
+        $builder = clone($this);
         foreach ($columns as $column) {
-            $this->columns[] = $column;
+            $builder->columns[] = $column;
         }
         
-        return $this;
+        return $builder;
     }
 
     public function selectRaw(string $expression): static
     {
-        $this->rawColumns[] = $expression;
-        return $this;
+        $builder = clone $this;
+
+        $builder->columns[] = $expression;
+        return $builder;
     }
 
 
     public function where(string $column, string $operator, mixed $value = null): static
     {
-        $this->wheres[] = new WhereClause($column, $operator, $value);
-        return $this;
+        $builder = clone $this;
+        $builder->wheres[] = new WhereClause($column, $operator, $value);
+        return $builder;
     }
 
     public function whereEquals(string $column, mixed $value): static
@@ -73,20 +77,23 @@ class QueryBuilder implements QueryBuilderContract
 
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
-        $this->orderBys[] = new OrderByClause($column, $direction);
-        return $this;
+        $builder = clone $this;
+        $builder->orderBys[] = new OrderByClause($column, $direction);
+        return $builder;
     }
 
     public function limit(int $limit): static
     {
-        $this->limitValue = $limit;
-        return $this;
+        return clone($this, [
+            "limitValue" => $limit
+        ]);
     }
 
     public function offset(int $offset): static
     {
-        $this->offsetValue = $offset;
-        return $this;
+        return clone($this, [
+            "offsetValue" => $offset
+        ]);
     }
 
     public function compile(): CompiledQuery
@@ -103,20 +110,23 @@ class QueryBuilder implements QueryBuilderContract
 
     public function join(string $table, string $left, string $operator, string $right): static
     {
-        $this->joins[] = new JoinClause($table, JoinType::Inner, $left, $operator, $right);
-        return $this;
+        $builder = clone($this);
+        $builder->joins[] = new JoinClause($table, JoinType::Inner, $left, $operator, $right);
+        return $builder;
     }
 
     public function leftJoin(string $table, string $left, string $operator, string $right): static
     {
-        $this->joins[] = new JoinClause($table, JoinType::Left, $left, $operator, $right);
-        return $this;
+        $builder = clone($this);
+        $builder->joins[] = new JoinClause($table, JoinType::Left, $left, $operator, $right);
+        return $builder;
     }
 
     public function rightJoin(string $table, string $left, string $operator, string $right): static
     {
-        $this->joins[] = new JoinClause($table, JoinType::Right, $left, $operator, $right);
-        return $this;
+        $builder = clone($this);
+        $builder->joins[] = new JoinClause($table, JoinType::Right, $left, $operator, $right);
+        return $builder;
     }
 
     public function get(): array
@@ -179,21 +189,36 @@ class QueryBuilder implements QueryBuilderContract
 
     public function whereRaw(string $sql): static
     {
-        // TODO: Implement whereRaw() method.
+        $builder = clone $this;
+        $builder->wheres[] = new RawClause($sql);
+        return $builder;
     }
 
     public function count(): int
     {
-        // TODO: Implement count() method.
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this, [
+            "columns" => [$this->grammar->getCountExpression()]
+        ]);
+        $row = $this->executor->fetch($builder->compile());
+        return $row ? (int) array_first($row) : 0;
     }
 
     public function exists(): bool
     {
-        // TODO: Implement exists() method.
+        $this->throwExceptionIfExecutorNotExists();
+
+        $builder = clone($this, [
+            "columns" => ['1'],
+            'limitValue' => 1,
+        ]);
+        return $builder->executor->fetch($builder->compile()) !== null;
     }
 
     public function paginate(int $page, int $perPage): array
     {
-        // TODO: Implement paginate() method.
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this)->limit($perPage)->offset(($page - 1) * $perPage);
+        return $builder->executor->fetchAll($builder->compile());
     }
 }

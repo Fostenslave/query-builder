@@ -3,17 +3,19 @@
 namespace SimpleORM\Database;
 
 use Closure;
+use PDO;
 use SimpleORM\Grammar\Grammar;
 use SimpleORM\Grammar\SqliteGrammar;
 use SimpleORM\Query\PDOQueryExecutor;
 use SimpleORM\Query\QueryBuilder;
 use SimpleORM\Query\QueryBuilderContract;
 use SimpleORM\Query\QueryExecutor;
+use Throwable;
 
 class DB implements TransactionManager
 {
     public function __construct(
-        private readonly \PDO     $pdo,
+        private readonly PDO     $pdo,
         private readonly Grammar  $grammar = new SqliteGrammar(),
         private ?QueryExecutor    $executor = null,
     )
@@ -56,7 +58,7 @@ class DB implements TransactionManager
             $result = $callback($this);
             $this->pdo->commit();
             return $result;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->pdo->rollBack();
             throw $e;
         }

@@ -4,14 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleORM\Grammar;
 
-use SimpleORM\Query\CompiledQuery;
-use SimpleORM\Query\JoinClause;
-use SimpleORM\Query\OrderByClause;
-use SimpleORM\Query\RawClause;
-use SimpleORM\Query\WhereClause;
-
-
-class SqliteGrammar extends BaseGrammar implements Grammar
+class MysqlGrammar extends BaseGrammar implements Grammar
 {
 
     protected function wrapValue(string $value): string
@@ -20,9 +13,8 @@ class SqliteGrammar extends BaseGrammar implements Grammar
             return '*';
         }
 
-        return '"' . str_replace('"', '""', $value) . '"';
+        return '`' . str_replace('"', '""', $value) . '`';
     }
-
 
     public function getCountExpression(): string
     {

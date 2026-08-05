@@ -7,6 +7,7 @@ namespace SimpleORM\Grammar;
 use SimpleORM\Query\CompiledQuery;
 use SimpleORM\Query\JoinClause;
 use SimpleORM\Query\OrderByClause;
+use SimpleORM\Query\RawClause;
 use SimpleORM\Query\WhereClause;
 
 /**
@@ -22,7 +23,7 @@ interface Grammar
      * @param string $table
      * @param array  $columns
      * @param array<JoinClause> $joins
-     * @param array<WhereClause> $wheres
+     * @param array<WhereClause|RawClause> $wheres
      * @param array<OrderByClause> $orderBys
      * @param int|null $limit
      * @param int|null $offset
@@ -55,4 +56,6 @@ interface Grammar
      * @param array<WhereClause> $wheres
      */
     public function compileDelete(string $table, array $wheres): CompiledQuery;
+
+    public function getCountExpression(): string;
 }

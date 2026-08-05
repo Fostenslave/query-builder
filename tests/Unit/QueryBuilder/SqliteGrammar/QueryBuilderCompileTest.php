@@ -21,9 +21,7 @@ class QueryBuilderCompileTest extends TestCase
 
     public function testSelectAllFromTable(): void
     {
-        $qb = new QueryBuilder($this->grammar, 'users');
-
-        $compiled = $qb->compile();
+        $compiled = new QueryBuilder($this->grammar, 'users')->compile();
 
         $this->assertSame('SELECT * FROM "users"', $compiled->sql);
         $this->assertSame([], $compiled->bindings);
@@ -32,9 +30,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testSelectSpecificColumns(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->select('id', 'name', 'age');
-
-        $compiled = $qb->compile();
+        $compiled = $qb->select('id', 'name', 'age')->compile();
 
         $this->assertSame('SELECT id, name, age FROM "users"', $compiled->sql);
         $this->assertSame([], $compiled->bindings);
@@ -43,9 +39,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testWhereSingleCondition(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->where('id', '=', 1);
-
-        $compiled = $qb->compile();
+        $compiled = $qb->where('id', '=', 1)->compile();
 
         $this->assertSame('SELECT * FROM "users" WHERE id = :where_0', $compiled->sql);
         $this->assertSame([':where_0' => 1], $compiled->bindings);
@@ -54,10 +48,8 @@ class QueryBuilderCompileTest extends TestCase
     public function testWhereMultipleConditionsAreAnded(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->where('age', '>', 18)
-           ->where('name', '=', 'Alice');
-
-        $compiled = $qb->compile();
+        $compiled = $qb->where('age', '>', 18)
+           ->where('name', '=', 'Alice')->compile();
 
         $this->assertSame(
             'SELECT * FROM "users" WHERE age > :where_0 AND name = :where_1',
@@ -69,9 +61,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testOrderByAsc(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->orderBy('name', 'ASC');
-
-        $compiled = $qb->compile();
+        $compiled = $qb->orderBy('name', 'ASC')->compile();
 
         $this->assertSame('SELECT * FROM "users" ORDER BY name ASC', $compiled->sql);
     }
@@ -79,9 +69,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testOrderByDesc(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->orderBy('age', 'DESC');
-
-        $compiled = $qb->compile();
+        $compiled = $qb->orderBy('age', 'DESC')->compile();
 
         $this->assertSame('SELECT * FROM "users" ORDER BY age DESC', $compiled->sql);
     }
@@ -89,9 +77,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testLimit(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->limit(10);
-
-        $compiled = $qb->compile();
+        $compiled = $qb->limit(10)->compile();
 
         $this->assertSame('SELECT * FROM "users" LIMIT 10', $compiled->sql);
     }
@@ -99,9 +85,7 @@ class QueryBuilderCompileTest extends TestCase
     public function testLimitAndOffset(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->limit(10)->offset(20);
-
-        $compiled = $qb->compile();
+        $compiled = $qb->limit(10)->offset(20)->compile();
 
         $this->assertSame('SELECT * FROM "users" LIMIT 10 OFFSET 20', $compiled->sql);
     }
@@ -109,12 +93,13 @@ class QueryBuilderCompileTest extends TestCase
     public function testFullQuery(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $qb->select('id', 'name')
+        $qb = $qb->select('id', 'name')
            ->where('age', '>=', 18)
            ->where('active', '=', true)
            ->orderBy('name', 'ASC')
            ->limit(5)
            ->offset(10);
+
 
         $compiled = $qb->compile();
 

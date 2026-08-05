@@ -68,6 +68,14 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertTrue($this->db->table('users')->where('id', '=', 1)->exists());
     }
 
+    public function testExistsWithSelectingColumns(): void
+    {
+        $this->assertTrue($this->db->table('users')
+            ->select('id')
+            ->where('id', '=', 1)
+            ->exists());
+    }
+
     public function testExistsReturnsFalseWhenNoRows(): void
     {
         $this->assertFalse($this->db->table('users')->where('id', '=', 999)->exists());
@@ -77,7 +85,7 @@ class CountExistsRawQueriesTest extends TestCase
     public function testPaginateFirstPage(): void
     {
         $rows = $this->db->table('users')
-            ->orderBy('id', 'ASC')
+            ->orderBy('id')
             ->paginate(page: 1, perPage: 2);
 
         $this->assertCount(2, $rows);
