@@ -33,11 +33,11 @@ abstract class BaseGrammar implements Grammar
 
         $bindings = $compiledWheres->bindings;
 
-        if (isset($limit) && $limit > 0) {
+        if (isset($limit) && $limit >= 0) {
             $sql .= " LIMIT $limit";
         }
 
-        if (isset($offset) && $offset > 0) {
+        if (isset($offset) && $offset >= 0) {
             $sql .= " OFFSET $offset";
         }
 

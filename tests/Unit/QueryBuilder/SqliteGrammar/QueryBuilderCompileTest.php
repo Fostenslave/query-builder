@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleORM\Tests\Unit\QueryBuilder\SqliteGrammar;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SimpleORM\Grammar\Grammar;
 use SimpleORM\Grammar\SqliteGrammar;
@@ -103,6 +104,15 @@ class QueryBuilderCompileTest extends TestCase
         $compiled = $qb->limit(10)->compile();
 
         $this->assertSame('SELECT * FROM "users" LIMIT 10', $compiled->sql);
+
+        $qb = new QueryBuilder($this->grammar, 'users');
+        $compiled = $qb->limit(0)->compile();
+        $this->assertSame('SELECT * FROM "users" LIMIT 0', $compiled->sql);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Limit value should be greater or equals zero');
+        $qb = new QueryBuilder($this->grammar, 'users');
+        $qb->limit(-10)->compile();
     }
 
     public function testLimitAndOffset(): void
@@ -111,6 +121,13 @@ class QueryBuilderCompileTest extends TestCase
         $compiled = $qb->limit(10)->offset(20)->compile();
 
         $this->assertSame('SELECT * FROM "users" LIMIT 10 OFFSET 20', $compiled->sql);
+
+        $compiled = $qb->limit(10)->offset(0)->compile();
+        $this->assertSame('SELECT * FROM "users" LIMIT 10 OFFSET 0', $compiled->sql);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Offset value should be greater or equals zero');
+        $qb->limit(10)->offset(-10)->compile();
     }
 
     public function testFullQuery(): void

@@ -84,6 +84,10 @@ class QueryBuilder implements QueryBuilderContract
 
     public function limit(int $limit): static
     {
+        if ($limit < 0) {
+            throw new \InvalidArgumentException('Limit value should be greater or equals zero');
+        }
+
         return clone($this, [
             "limitValue" => $limit
         ]);
@@ -91,6 +95,10 @@ class QueryBuilder implements QueryBuilderContract
 
     public function offset(int $offset): static
     {
+        if ($offset < 0) {
+            throw new \InvalidArgumentException('Offset value should be greater or equals zero');
+        }
+
         return clone($this, [
             "offsetValue" => $offset
         ]);
