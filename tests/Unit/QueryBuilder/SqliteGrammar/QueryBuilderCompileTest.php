@@ -46,11 +46,34 @@ class QueryBuilderCompileTest extends TestCase
         $this->assertSame([':where_0' => 1], $compiled->bindings);
     }
 
+    public function testWhereNullValues(): void
+    {
+        $qb = new QueryBuilder($this->grammar, 'users');
+        $compiled = $qb->where('id', '=', null)->compile();
+
+        $this->assertSame('SELECT * FROM "users" WHERE "id" is null', $compiled->sql);
+        $this->assertSame([], $compiled->bindings);
+
+        $compiled = $qb->where('id', '!=', null)->compile();
+
+        $this->assertSame('SELECT * FROM "users" WHERE "id" is not null', $compiled->sql);
+        $this->assertSame([], $compiled->bindings);
+
+        $compiled = $qb->whereNotNull('id')->compile();
+        $this->assertSame('SELECT * FROM "users" WHERE "id" is not null', $compiled->sql);
+
+
+
+        $compiled = $qb->whereNull('id')->compile();
+        $this->assertSame('SELECT * FROM "users" WHERE "id" is null', $compiled->sql);
+    }
+
     public function testWhereMultipleConditionsAreAnded(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
-        $compiled = $qb->where('age', '>', 18)
-           ->where('name', '=', 'Alice')->compile();
+        $compiled = $qb
+            ->where('age', '>', 18)
+            ->where('name', '=', 'Alice')->compile();
 
         $this->assertSame(
             'SELECT * FROM "users" WHERE "age" > :where_0 AND "name" = :where_1',

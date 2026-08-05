@@ -70,6 +70,16 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    public function whereNull(string $column): static
+    {
+        return $this->where($column, '=');
+    }
+
+    public function whereNotNull(string $column): static
+    {
+        return $this->where($column, '!=');
+    }
+
     public function whereEquals(string $column, mixed $value): static
     {
         return $this->where($column, '=', $value);
@@ -146,7 +156,7 @@ class QueryBuilder implements QueryBuilderContract
     public function first(): ?array
     {
         $this->throwExceptionIfExecutorNotExists();
-        return $this->executor->fetch($this->compile());
+        return $this->executor->fetch(clone($this)->limit(1)->compile());
     }
 
     public function compileInsert(array $values): CompiledQuery

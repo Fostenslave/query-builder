@@ -37,7 +37,17 @@ final readonly class WhereClause implements Compilable
         $prefix = self::PREFIX;
         $bindingKey = ":{$prefix}_$sqlIndex";
         $wrappedColumn = $grammar->wrapTable($this->column);
+
+        if ($this->operator === '=' && $this->value === null) {
+            return new CompiledQuery("$wrappedColumn is null", []);
+        }
+
+        if (in_array($this->operator, ['!=', '<>']) && $this->value === null) {
+            return new CompiledQuery("$wrappedColumn is not null", []);
+        }
+
         $sql = "$wrappedColumn $this->operator $bindingKey";
+
         return new CompiledQuery($sql, [$bindingKey => $this->value]);
     }
 
