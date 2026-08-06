@@ -3,6 +3,7 @@
 Immutable, PDO SQL query builder with compile-time dialect support.
 
 - Dialects extensible via `Grammar` interface
+- Built-in SQLITE, MySql grammars
 - Raw SQL with parameterised bindings
 - PDO prepared statements with typed bindings
 - Transactions via callback or manual begin/commit/rollBack
@@ -10,10 +11,13 @@ Immutable, PDO SQL query builder with compile-time dialect support.
 ## Installation
 
 ```bash
-composer require simple-orm/query-builder
+composer require fostenslave/query-builder
 ```
 
-## Quick start
+## Examples
+
+
+### Query builder initialization with basic select
 
 ```php
 use Fostenslave\QueryBuilder\Database\DB;
@@ -23,11 +27,7 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $db = new DB($pdo);
-```
 
-### SELECT
-
-```php
 $users = $db->table('users')
     ->select('id', 'name', 'email')
     ->where('active', '=', 1)
@@ -37,17 +37,18 @@ $users = $db->table('users')
 
 $user = $db->table('users')->where('id', '=', 42)->first();
 ```
-
-### JOIN
+### Joins
 
 ```php
 $db->table('users')
-    ->select('users.name', 'posts.title')
+    ->select('users.name', 'posts.title', 'issues.title')
     ->join('posts', 'users.id', '=', 'posts.user_id')
+    ->join('issues', 'users.id', '=', 'issues.user_id')
     ->get();
 
 $db->table('users')
     ->leftJoin('profiles', 'users.id', '=', 'profiles.user_id')
+    ->rightJoin('issues', 'users.id', '=', 'issues.user_id')
     ->get();
 ```
 
@@ -71,12 +72,12 @@ $db->table('orders')
     ->havingRaw('COUNT(*) > ?', [1])
     ->get();
 
-$total = $db->table('orders')->sum('amount');  // → float|int|null
+$total = $db->table('orders')->sum('amount');
 $avg   = $db->table('orders')->avg('amount');
 $min   = $db->table('orders')->min('amount');
 $max   = $db->table('orders')->max('amount');
 $count = $db->table('orders')->where('status', '=', 'completed')->count();
-$has   = $db->table('orders')->where('id', '=', 42)->exists();  // → bool
+$has   = $db->table('orders')->where('id', '=', 42)->exists();
 ```
 
 ### Raw expressions with bindings
@@ -97,7 +98,7 @@ $db->table('users')
     ->paginate(page: 2, perPage: 10);
 ```
 
-### Transactions
+### Transactions example
 
 ```php
 $db->transaction(function (DB $db) {
@@ -115,7 +116,7 @@ try {
 }
 ```
 
-### MySQL
+### MySQL grammar usage example
 
 ```php
 use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
@@ -126,7 +127,7 @@ $db = new DB($mysqlPdo, new MysqlGrammar());
 
 ## Immutability
 
-Every fluent method returns a **clone** — the original builder is never modified:
+Every query builder method returns a **clone** — the original builder is never modified:
 
 ```php
 $base = $db->table('users');
@@ -137,23 +138,10 @@ $active->get();
 $admins->get();
 ```
 
-## Architecture
+## Architecture and development
 
-```
-QueryBuilder (fluent API, state)  →  Grammar (SQL dialect compiler)  →  CompiledQuery (sql + bindings)
-                                                                                    ↓
-                                                                            QueryExecutor (PDO)
-
-DB — entry point, factory, transaction manager
-```
-
-## Testing
-
-```bash
-git clone https://github.com/simple-orm/query-builder.git
-cd query-builder
-make install
-```
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the class model, query execution
+flow, development setup, testing commands, and extension recommendations.
 
 
 ## Extending — custom Grammar

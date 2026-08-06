@@ -1,36 +1,38 @@
-.PHONY: build up down restart shell composer test php clean help
+.PHONY: init build up down restart shell composer test php clean help
 
-help: ## показать это сообщение
+help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
-build: ## собрать образ
+init: build ## Full setup: build Docker image, install composer dependencies
+	docker compose run --rm simple-orm composer install
+
+build: ## Build Docker image
 	docker compose build
 
-up: build ## поднять контейнер в фоне
+up: build ## Build and start container in background
 	docker compose up -d
 
-down: ## остановить контейнер
+down: ## Stop and remove container
 	docker compose down
 
-restart: ## перезапустить контейнер
+restart: ## Restart container
 	docker compose restart
 
-shell: up ## войти в shell контейнера
+shell: up ## Build, start, and open shell in container
 	docker compose exec simple-orm sh
 
-# make composer CMD="install"     — установить зависимости
-# make composer CMD="require ..." — добавить пакет
-composer: ## запустить composer (передай CMD="...")
+composer: ## Run composer inside container. Usage: make composer CMD="require foo/bar"
 	docker compose run --rm simple-orm composer $(CMD)
 
-# make test                 — запустить все тесты
-# make test ARGS="--filter" — запустить конкретный тест
-test: ## запустить phpunit (опционально ARGS="...")
+composer-install: ## Install composer dev dependencies
+	docker compose run --rm simple-orm composer install --dev
+composer-update: ## Update composer dev dependencies
+	docker compose run --rm simple-orm composer update --lock
+test: ## Run PHPUnit tests. Usage: make test ARGS="--filter FooTest"
 	docker compose run --rm simple-orm vendor/bin/phpunit $(ARGS)
 
-# make php ARGS="-v" — запустить php
-php: ## запустить php (опционально ARGS="...")
+php: ## Run PHP inside container. Usage: make php ARGS="-r 'echo 1;'"
 	docker compose run --rm simple-orm php $(ARGS)
 
-clean: ## удалить контейнер и образы
+clean: ## Remove container and volumes
 	docker compose down -v --remove-orphans
