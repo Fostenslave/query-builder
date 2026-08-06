@@ -63,9 +63,10 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertSame(0, $this->db->table('users')->where('age', '>', 100)->count());
     }
 
-    public function testExistsReturnsTrueWhenRowsExist(): void
+    public function testExistsReturnsTrueOrFalse(): void
     {
         $this->assertTrue($this->db->table('users')->where('id', '=', 1)->exists());
+        $this->assertFalse($this->db->table('users')->where('id', '=', 9999)->exists());
     }
 
     public function testExistsWithSelectingColumns(): void
@@ -73,14 +74,14 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertTrue($this->db->table('users')
             ->select('id')
             ->where('id', '=', 1)
-            ->exists());
+            ->exists()
+        );
     }
 
     public function testExistsReturnsFalseWhenNoRows(): void
     {
         $this->assertFalse($this->db->table('users')->where('id', '=', 999)->exists());
     }
-
 
     public function testPaginateFirstPage(): void
     {
@@ -132,17 +133,6 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertSame(['Alice', 'Bob'], array_column($rows, 'name'));
     }
 
-
-    public function testSelectRawCount(): void
-    {
-        $row = $this->db->table('users')
-            ->selectRaw('COUNT(*) AS total')
-            ->first();
-
-        $this->assertNotNull($row);
-        $this->assertSame(5, (int) $row['total']);
-    }
-
     public function testSelectRawWithWhere(): void
     {
         $row = $this->db->table('users')
@@ -152,16 +142,6 @@ class CountExistsRawQueriesTest extends TestCase
 
         $this->assertNotNull($row);
         $this->assertSame(3, (int) $row['total']);
-    }
-
-    public function testWhereRawSimple(): void
-    {
-        $rows = $this->db->table('users')
-            ->whereRaw('age > 20')
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $this->assertCount(4, $rows);
     }
 
     public function testWhereRawCombinedWithWhere(): void
@@ -174,17 +154,6 @@ class CountExistsRawQueriesTest extends TestCase
 
         $this->assertCount(2, $rows);
         $this->assertSame(['Alice', 'Dave'], array_column($rows, 'name'));
-    }
-
-    public function testWhereRawWithBindingSingleParam(): void
-    {
-        $rows = $this->db->table('users')
-            ->whereRaw('age > ?', [20])
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $this->assertCount(4, $rows);
-        $this->assertSame(['Alice', 'Charlie', 'Dave', 'Eve'], array_column($rows, 'name'));
     }
 
     public function testWhereRawWithMultipleBindings(): void
@@ -216,15 +185,12 @@ class CountExistsRawQueriesTest extends TestCase
             ->whereRaw('age > ?', ["18; DROP TABLE users; --"])
             ->get();
 
-        // Таблица не удалена — значение не вклеилось в SQL
         $this->assertSame(5, $this->db->table('users')->count());
-        // Сравнение age > "18..." в SQLite даёт false — нет rows
         $this->assertCount(0, $rows);
     }
 
     public function testWhereRawWithoutBackwardCompat(): void
     {
-        // Старый вызов без bindings — должен работать как раньше
         $rows = $this->db->table('users')
             ->whereRaw('age > 20')
             ->orderBy('id', 'ASC')

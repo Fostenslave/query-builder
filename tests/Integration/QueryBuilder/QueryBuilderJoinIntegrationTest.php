@@ -61,7 +61,6 @@ class QueryBuilderJoinIntegrationTest extends TestCase
         $stmt->execute($compiled->bindings);
         $rows = $stmt->fetchAll();
 
-        // 2 поста Alice, Bob без постов — не попадает
         $this->assertCount(2, $rows);
         $this->assertSame(['Hello', 'World'], array_column($rows, 'title'));
     }
@@ -76,7 +75,6 @@ class QueryBuilderJoinIntegrationTest extends TestCase
         $stmt->execute($compiled->bindings);
         $rows = $stmt->fetchAll();
 
-        // Alice (2 поста) + Bob (0 постов, NULL в колонках posts)
         $this->assertCount(3, $rows);
     }
 
@@ -98,7 +96,6 @@ class QueryBuilderJoinIntegrationTest extends TestCase
 
     public function testRightJoinReturnsAllRightRows(): void
     {
-        // SQLite 3.51.2 поддерживает RIGHT JOIN
         $compiled = $this->builder()
             ->rightJoin('roles', 'users.role_id', '=', 'roles.id')
             ->compile();

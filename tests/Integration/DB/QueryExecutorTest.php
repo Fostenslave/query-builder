@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Fostenslave\QueryBuilder\Tests\Integration;
+namespace Fostenslave\QueryBuilder\Tests\Integration\DB;
 
+use Fostenslave\QueryBuilder\Executor\PDOQueryExecutor;
+use Fostenslave\QueryBuilder\Executor\QueryExecutor;
+use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
+use Fostenslave\QueryBuilder\Query\QueryBuilder;
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
-use Fostenslave\QueryBuilder\Query\PDOQueryExecutor;
-use Fostenslave\QueryBuilder\Query\QueryBuilder;
-use Fostenslave\QueryBuilder\Query\QueryExecutor;
 
 
 class QueryExecutorTest extends TestCase

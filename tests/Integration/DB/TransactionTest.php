@@ -9,7 +9,6 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Database\DB;
 
-
 class TransactionTest extends TestCase
 {
     private PDO $pdo;
@@ -92,7 +91,6 @@ class TransactionTest extends TestCase
             $this->assertSame('boom', $e->getMessage());
         }
 
-        // Изменения откачены
         $alice = $this->db->table('users')->where('id', '=', 1)->first();
         $this->assertSame(100, $alice['balance']);
     }
@@ -119,7 +117,6 @@ class TransactionTest extends TestCase
 
     public function testTransactionNestedCallsWork(): void
     {
-        // Внешняя транзакция, внутри — обычные операции
         $result = $this->db->transaction(function (DB $db) {
             $db->table('users')->insert(['name' => 'Charlie', 'balance' => 0]);
             $db->table('users')->insert(['name' => 'Dave', 'balance' => 0]);
@@ -131,7 +128,6 @@ class TransactionTest extends TestCase
 
     public function testMultipleUpdatesAtomically(): void
     {
-        // Перевод денег: Alice -> Bob. Обе операции в одной транзакции.
         $this->db->transaction(function (DB $db) {
             $db->table('users')->where('id', '=', 1)->update(['balance' => 50]);
             $db->table('users')->where('id', '=', 2)->update(['balance' => 100]);

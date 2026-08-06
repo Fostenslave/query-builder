@@ -3,16 +3,16 @@
 namespace Fostenslave\QueryBuilder\Database;
 
 use Closure;
-use PDO;
+use Fostenslave\QueryBuilder\Executor\PDOQueryExecutor;
+use Fostenslave\QueryBuilder\Executor\QueryExecutor;
 use Fostenslave\QueryBuilder\Grammar\Grammar;
 use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
-use Fostenslave\QueryBuilder\Query\PDOQueryExecutor;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 use Fostenslave\QueryBuilder\Query\QueryBuilderContract;
-use Fostenslave\QueryBuilder\Query\QueryExecutor;
+use PDO;
 use Throwable;
 
-class DB implements TransactionManager
+class DB
 {
     public function __construct(
         private readonly PDO     $pdo,

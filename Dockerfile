@@ -16,7 +16,6 @@ RUN apk add --no-cache \
         pdo_mysql \
         pdo_pgsql \
         pdo_sqlite \
-    && echo 'memory_limit=1024M' > /usr/local/etc/php/conf.d/40-custom.ini \
     && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
 CMD ["tail", "-f", "/dev/null"]

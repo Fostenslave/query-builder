@@ -40,7 +40,6 @@ class DBTest extends TestCase
         $pdo->prepare("INSERT INTO posts (user_id, title) VALUES (?, ?)")->execute([1, 'Hello']);
         $pdo->prepare("INSERT INTO posts (user_id, title) VALUES (?, ?)")->execute([1, 'World']);
 
-        // Создаём Database с PDO — больше никаких ручных Grammar/Executor
         $this->db = new Database\DB($pdo);
     }
 

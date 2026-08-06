@@ -9,7 +9,6 @@ use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final readonly class WhereClause implements Compilable
 {
-    // Разрешенные операторы по идее могут быть разные для разных SQL Grammar, но есть же стандарт SQL
     private const array ALLOWED_OPERATORS = ['=', '<', '>', '>=', '<=', '<>', '!='];
     private(set) string $column;
     private(set) string $operator;

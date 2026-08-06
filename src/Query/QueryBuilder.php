@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Fostenslave\QueryBuilder\Query;
 
+use Fostenslave\QueryBuilder\Executor\QueryExecutor;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
 use InvalidArgumentException;
 use RuntimeException;
-use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 class QueryBuilder implements QueryBuilderContract
 {
@@ -287,48 +288,32 @@ class QueryBuilder implements QueryBuilderContract
 
     public function sum(string $column): mixed
     {
-        $this->throwExceptionIfExecutorNotExists();
-        $builder = clone($this, [
-            'columns' => [],
-        ]);
-        $wrappedColumn = $this->grammar->wrapTable($column);
-        $builder = $builder->selectRaw("sum($wrappedColumn)");
-        $row = $this->executor->fetch($builder->compile());
-        return $row ? array_first($row) : 0;
+        return $this->getAggregatedValue($column, 'sum');
     }
 
     public function avg(string $column): mixed
     {
-        $this->throwExceptionIfExecutorNotExists();
-        $builder = clone($this, [
-            'columns' => [],
-        ]);
-        $wrappedColumn = $this->grammar->wrapTable($column);
-        $builder = $builder->selectRaw("avg($wrappedColumn)");
-        $row = $this->executor->fetch($builder->compile());
-        return $row ? array_first($row) : 0;
+        return $this->getAggregatedValue($column, 'avg');
     }
 
     public function min(string $column): mixed
     {
-        $this->throwExceptionIfExecutorNotExists();
-        $builder = clone($this, [
-            'columns' => [],
-        ]);
-        $wrappedColumn = $this->grammar->wrapTable($column);
-        $builder = $builder->selectRaw("min($wrappedColumn)");
-        $row = $this->executor->fetch($builder->compile());
-        return $row ? array_first($row) : 0;
+        return $this->getAggregatedValue($column, 'min');
     }
 
     public function max(string $column): mixed
+    {
+        return $this->getAggregatedValue($column, 'max');
+    }
+
+    private function getAggregatedValue(string $column, string $functionName)
     {
         $this->throwExceptionIfExecutorNotExists();
         $builder = clone($this, [
             'columns' => [],
         ]);
         $wrappedColumn = $this->grammar->wrapTable($column);
-        $builder = $builder->selectRaw("max($wrappedColumn)");
+        $builder = $builder->selectRaw("$functionName($wrappedColumn)");
         $row = $this->executor->fetch($builder->compile());
         return $row ? array_first($row) : 0;
     }

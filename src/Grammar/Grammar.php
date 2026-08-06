@@ -12,11 +12,8 @@ use Fostenslave\QueryBuilder\Query\Expression;
 use Fostenslave\QueryBuilder\Query\WhereClause;
 
 /**
- * Точка расширения для разных СУБД.
- * Каждая реализация транслирует generic-структуру запроса в диалект конкретной БД.
- *
- * Реализация: SqliteGrammar (в src/Grammar/SqliteGrammar.php).
- * Будущее: MysqlGrammar, PostgresGrammar — без изменения ядра.
+ * Dialect interface for different database realizations
+ * Realization examples: SqliteGrammar.php, MysqlGrammar.php
  */
 interface Grammar
 {
@@ -51,7 +48,7 @@ interface Grammar
 
     /**
      * @param string $table
-     * @param array<string, mixed> $values  column => value (SET clause)
+     * @param array<string, mixed> $values
      * @param array<WhereClause> $wheres
      */
     public function compileUpdate(string $table, array $values, array $wheres): CompiledQuery;

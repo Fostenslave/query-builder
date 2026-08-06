@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Fostenslave\QueryBuilder\Query;
+namespace Fostenslave\QueryBuilder\Executor;
+use Fostenslave\QueryBuilder\Query\CompiledQuery;
+
 readonly class PDOQueryExecutor implements QueryExecutor
 {
-    public function __construct(private \PDO $pdo)
-    {
-
-    }
+    public function __construct(private \PDO $pdo) {}
 
     public function fetchAll(CompiledQuery $query): array {
         $stmt = $this->pdo->prepare($query->sql);
@@ -30,6 +29,11 @@ readonly class PDOQueryExecutor implements QueryExecutor
         return $stmt->rowCount();
     }
 
+    public function lastInsertId(): string
+    {
+        return $this->pdo->lastInsertId();
+    }
+
     private function bindAndExecute(\PDOStatement $stmt, array $bindings): \PDOStatement
     {
         foreach ($bindings as $key => $value) {
@@ -47,8 +51,5 @@ readonly class PDOQueryExecutor implements QueryExecutor
         return $stmt;
     }
 
-    public function lastInsertId(): string
-    {
-        return $this->pdo->lastInsertId();
-    }
+
 }

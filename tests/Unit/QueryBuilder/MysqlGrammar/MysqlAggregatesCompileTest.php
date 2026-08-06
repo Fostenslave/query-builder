@@ -8,11 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
-/**
- * Unit-тесты компиляции GROUP BY, HAVING для MySQL — backticks.
- *
- * ЭТОТ ФАЙЛ УЖЕ ГОТОВ. Реализуй groupBy, having, havingRaw и компиляцию.
- */
 class MysqlAggregatesCompileTest extends TestCase
 {
     private MysqlGrammar $grammar;

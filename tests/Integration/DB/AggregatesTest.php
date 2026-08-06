@@ -8,11 +8,6 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Database\DB;
 
-/**
- * Тесты агрегатов: GROUP BY, HAVING, sum/avg/min/max.
- *
- * ЭТОТ ФАЙЛ УЖЕ ГОТОВ. Реализуй методы в QueryBuilder и Grammar.
- */
 class AggregatesTest extends TestCase
 {
     private DB $db;
@@ -46,14 +41,13 @@ class AggregatesTest extends TestCase
         $this->db = new DB($pdo);
     }
 
-    // ── TERMINAL AGGREGATES ────────────────────────────────
-
     public function testSumReturnsTotal(): void
     {
         $this->assertSame(800.0, $this->db->table('orders')->sum('amount'));
+        $this->assertSame(9, $this->db->table('orders')->sum('user_id'));
     }
 
-    public function testSumWithWhere(): void
+    public function testSumWithConditions(): void
     {
         $sum = $this->db->table('orders')
             ->where('status', '=', 'completed')
@@ -80,8 +74,6 @@ class AggregatesTest extends TestCase
     {
         $this->assertNull($this->db->table('orders')->where('id', '=', 999)->sum('amount'));
     }
-
-    // ── GROUP BY ────────────────────────────────────────────
 
     public function testGroupByWithCount(): void
     {
@@ -121,8 +113,6 @@ class AggregatesTest extends TestCase
         $this->assertSame(200.0, (float) $rows[1]['total']);
         $this->assertSame(300.0, (float) $rows[2]['total']);
     }
-
-    // ── HAVING ─────────────────────────────────────────────
 
     public function testHavingWithCount(): void
     {
@@ -175,7 +165,6 @@ class AggregatesTest extends TestCase
                 $this->assertGreaterThanOrEqual($lowerBound, $row['total']),
                 $this->assertLessThanOrEqual($higherBound, $row['total']),
         );
-
         }
     }
 
@@ -189,7 +178,6 @@ class AggregatesTest extends TestCase
             ->having('cnt', '>=', 1)
             ->orderBy('user_id')
             ->get();
-
 
         $this->assertCount(2, $rows);
     }
