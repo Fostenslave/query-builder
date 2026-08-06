@@ -8,6 +8,7 @@ use SimpleORM\Query\CompiledQuery;
 use SimpleORM\Query\JoinClause;
 use SimpleORM\Query\OrderByClause;
 use SimpleORM\Query\RawClause;
+use SimpleORM\Query\SelectColumn;
 use SimpleORM\Query\WhereClause;
 
 /**
@@ -21,7 +22,7 @@ interface Grammar
 {
     /**
      * @param string $table
-     * @param array  $columns
+     * @param array<SelectColumn>  $columns
      * @param array<JoinClause> $joins
      * @param array<WhereClause|RawClause> $wheres
      * @param array<OrderByClause> $orderBys

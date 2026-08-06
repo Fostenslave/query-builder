@@ -6,8 +6,6 @@ namespace SimpleORM\Grammar;
 
 use SimpleORM\Query\Compilable;
 use SimpleORM\Query\CompiledQuery;
-use SimpleORM\Query\JoinClause;
-use SimpleORM\Query\OrderByClause;
 
 abstract class BaseGrammar implements Grammar
 {
@@ -21,8 +19,10 @@ abstract class BaseGrammar implements Grammar
         ?int $limit,
         ?int $offset,
     ): CompiledQuery {
-        $columns = array_unique($columns);
-        $columnsString = count($columns) > 0 ? implode(', ', $columns) : '*';
+        $compiledColumns = array_map(fn($column) =>  $column->compile($this)->sql, $columns);
+        $compiledColumns = array_unique($compiledColumns);
+        $columnsString = count($compiledColumns) > 0 ? implode(', ',$compiledColumns
+        ) : '*';
         $sql = "SELECT $columnsString FROM " . $this->wrapTable($table);
         $compiledWheres = $this->compileWheres($wheres);
         $compiledOrderBys = $this->compileOrderBys($orderBys);

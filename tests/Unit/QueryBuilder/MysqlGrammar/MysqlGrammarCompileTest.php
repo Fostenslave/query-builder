@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SimpleORM\Grammar\MysqlGrammar;
 use SimpleORM\Query\JoinType;
 use SimpleORM\Query\JoinClause;
+use SimpleORM\Query\SelectColumn;
 use SimpleORM\Query\WhereClause;
 
 
@@ -69,7 +70,11 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'users',
-            columns: ['id', 'name'],
+            columns: [
+                new SelectColumn('id'),
+                new SelectColumn('name'),
+                new SelectColumn('lower(name) as my_name', isRaw: true)
+            ],
             joins: [],
             wheres: [new WhereClause('age', '>', 18)],
             orderBys: [],
@@ -77,7 +82,7 @@ class MysqlGrammarCompileTest extends TestCase
             offset: null,
         );
 
-        $this->assertSame('SELECT id, name FROM `users` WHERE `age` > :where_0 LIMIT 10', $compiled->sql);
+        $this->assertSame('SELECT `id`, `name`, lower(name) as my_name FROM `users` WHERE `age` > :where_0 LIMIT 10', $compiled->sql);
         $this->assertSame([':where_0' => 18], $compiled->bindings);
     }
 

@@ -9,6 +9,9 @@ use SimpleORM\Grammar\Grammar;
 class QueryBuilder implements QueryBuilderContract
 {
 
+    /**
+     * @var array<SelectColumn>
+     */
     private(set) array $columns = [];
 
     /**
@@ -48,7 +51,7 @@ class QueryBuilder implements QueryBuilderContract
     {
         $builder = clone($this);
         foreach ($columns as $column) {
-            $builder->columns[] = $column;
+            $builder->columns[] = new SelectColumn($column);
         }
         
         return $builder;
@@ -58,7 +61,7 @@ class QueryBuilder implements QueryBuilderContract
     {
         $builder = clone $this;
 
-        $builder->columns[] = $expression;
+        $builder->columns[] = new SelectColumn(expression: $expression, isRaw: true);
         return $builder;
     }
 
@@ -215,9 +218,8 @@ class QueryBuilder implements QueryBuilderContract
     public function count(): int
     {
         $this->throwExceptionIfExecutorNotExists();
-        $builder = clone($this, [
-            "columns" => [$this->grammar->getCountExpression()]
-        ]);
+        $builder = clone $this;
+        $builder = $builder->selectRaw($this->grammar->getCountExpression());
         $row = $this->executor->fetch($builder->compile());
         return $row ? (int) array_first($row) : 0;
     }
@@ -227,7 +229,7 @@ class QueryBuilder implements QueryBuilderContract
         $this->throwExceptionIfExecutorNotExists();
 
         $builder = clone($this, [
-            "columns" => ['1'],
+            "columns" => [new SelectColumn('1')],
             'limitValue' => 1,
         ]);
         return $builder->executor->fetch($builder->compile()) !== null;

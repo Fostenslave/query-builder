@@ -175,4 +175,56 @@ interface QueryBuilderContract
      * @return array<int, array<string, mixed>>
      */
     public function paginate(int $page, int $perPage): array;
+
+    /**
+     * Добавляет GROUP BY по указанным колонкам.
+     *
+     * @param string ...$columns
+     */
+    public function groupBy(string ...$columns): static;
+
+    /**
+     * Добавляет условие HAVING (через AND).
+     *
+     * @param string $column   Имя колонки или агрегатное выражение ('COUNT(*)', 'SUM(amount)').
+     * @param string $operator '=', '!=', '>', '<', '>=', '<='
+     * @param mixed  $value    Значение (через плейсхолдер).
+     */
+    public function having(string $column, string $operator, mixed $value): static;
+
+    /**
+     * Добавляет сырое условие HAVING с плейсхолдерами.
+     *
+     * @param string $sql       Сырой SQL ('SUM(amount) > ?').
+     * @param array  $bindings  Значения для ?.
+     */
+    public function havingRaw(string $sql, array $bindings = []): static;
+
+    /**
+     * Возвращает SUM колонки.
+     *
+     * Терминальный метод.
+     */
+    public function sum(string $column): mixed;
+
+    /**
+     * Возвращает AVG колонки.
+     *
+     * Терминальный метод.
+     */
+    public function avg(string $column): mixed;
+
+    /**
+     * Возвращает MIN колонки.
+     *
+     * Терминальный метод.
+     */
+    public function min(string $column): mixed;
+
+    /**
+     * Возвращает MAX колонки.
+     *
+     * Терминальный метод.
+     */
+    public function max(string $column): mixed;
 }

@@ -96,7 +96,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT users.name, posts.title FROM "users" INNER JOIN "posts" ON users.id = posts.user_id',
+            'SELECT "users"."name", "posts"."title" FROM "users" INNER JOIN "posts" ON users.id = posts.user_id',
             $compiled->sql,
         );
     }
