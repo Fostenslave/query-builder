@@ -183,6 +183,15 @@ interface QueryBuilderContract
      */
     public function groupBy(string ...$columns): static;
 
+
+    /**
+     * Добавляет GROUP BY по сырому выражению
+     *
+     * @param string $expression
+     * @return QueryBuilderContract
+     */
+    public function groupByRaw(string $expression): static;
+
     /**
      * Добавляет условие HAVING (через AND).
      *

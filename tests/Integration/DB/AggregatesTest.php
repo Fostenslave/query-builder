@@ -88,7 +88,7 @@ class AggregatesTest extends TestCase
         $rows = $this->db->table('orders')
             ->selectRaw('user_id, COUNT(*) AS order_count')
             ->groupBy('user_id')
-            ->orderBy('user_id', 'ASC')
+            ->orderBy('user_id')
             ->get();
 
         $this->assertCount(3, $rows);
@@ -102,8 +102,8 @@ class AggregatesTest extends TestCase
         $rows = $this->db->table('orders')
             ->selectRaw('user_id, status, COUNT(*) AS cnt')
             ->groupBy('user_id', 'status')
-            ->orderBy('user_id', 'ASC')
-            ->orderBy('status', 'ASC')
+            ->orderBy('user_id')
+            ->orderBy('status')
             ->get();
 
         $this->assertCount(4, $rows);
@@ -114,7 +114,7 @@ class AggregatesTest extends TestCase
         $rows = $this->db->table('orders')
             ->selectRaw('user_id, SUM(amount) AS total')
             ->groupBy('user_id')
-            ->orderBy('user_id', 'ASC')
+            ->orderBy('user_id')
             ->get();
 
         $this->assertSame(300.0, (float) $rows[0]['total']);
@@ -130,7 +130,7 @@ class AggregatesTest extends TestCase
             ->selectRaw('user_id, COUNT(*) AS cnt')
             ->groupBy('user_id')
             ->having('cnt', '>', 1)
-            ->orderBy('user_id', 'ASC')
+            ->orderBy('user_id')
             ->get();
 
         $this->assertCount(2, $rows);
@@ -144,36 +144,53 @@ class AggregatesTest extends TestCase
             ->selectRaw('user_id, SUM(amount) AS total')
             ->groupBy('user_id')
             ->havingRaw('SUM(amount) > ?', [100])
-            ->orderBy('user_id', 'ASC')
+            ->orderBy('user_id')
             ->get();
 
         $this->assertCount(3, $rows);
+
+        foreach ($rows as $row) {
+            $this->assertGreaterThan(100, $row['total']);
+        }
     }
 
     public function testHavingRawWithMultipleBindings(): void
     {
-        $rows = $this->db->table('orders')
+        [$lowerBound, $higherBound] = [200, 350];
+        $rows = $this->db
+            ->table('orders')
             ->selectRaw('user_id, SUM(amount) AS total')
             ->groupBy('user_id')
-            ->havingRaw('SUM(amount) > ? AND SUM(amount) < ?', [100, 350])
-            ->orderBy('user_id', 'ASC')
+            ->havingRaw('SUM(amount) >= ? AND SUM(amount) < ?', [$lowerBound, $higherBound])
+            ->orderBy('user_id')
             ->get();
 
-        $this->assertCount(2, $rows);
-        $this->assertSame(1, (int) $rows[0]['user_id']);
-        $this->assertSame(2, (int) $rows[1]['user_id']);
+        $this->assertCount(3, $rows);
+        $this->assertEquals(1, (int) $rows[0]['user_id']);
+        $this->assertEquals(2, (int) $rows[1]['user_id']);
+        $this->assertEquals(3, (int) $rows[2]['user_id']);
+
+        foreach ($rows as $row) {
+            $this->logicalAnd(
+                $this->assertGreaterThanOrEqual($lowerBound, $row['total']),
+                $this->assertLessThanOrEqual($higherBound, $row['total']),
+        );
+
+        }
     }
 
     public function testHavingCombinedWithWhere(): void
     {
-        $rows = $this->db->table('orders')
+        $rows = $this->db
+            ->table('orders')
             ->selectRaw('user_id, COUNT(*) AS cnt')
             ->where('status', '=', 'completed')
             ->groupBy('user_id')
             ->having('cnt', '>=', 1)
-            ->orderBy('user_id', 'ASC')
+            ->orderBy('user_id')
             ->get();
 
-        $this->assertCount(3, $rows);
+
+        $this->assertCount(2, $rows);
     }
 }

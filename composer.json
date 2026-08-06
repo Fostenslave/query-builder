@@ -1,16 +1,20 @@
 {
     "name": "simple-orm/query-builder",
-    "version": "0.1",
-    "description": "Simple query builder",
-    "type": "project",
+    "description": "Immutable, PDO-based SQL query builder with compile-time dialect support (SQLite, MySQL, PostgreSQL)",
+    "type": "library",
     "license": "MIT",
+    "keywords": ["query-builder", "sql", "pdo", "sqlite", "mysql"],
     "require": {
         "php": ">=8.5",
-        "ext-pdo": "*",
-        "ext-pdo_sqlite": "*"
+        "ext-pdo": "*"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "phpunit/phpunit": "^11.0"
+    },
+    "suggest": {
+        "ext-pdo_mysql": "For MySQL support",
+        "ext-pdo_pgsql": "For PostgreSQL support"
     },
     "autoload": {
         "psr-4": {

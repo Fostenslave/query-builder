@@ -10,17 +10,17 @@ use SimpleORM\Grammar\Grammar;
 final readonly class RawClause implements Compilable
 {
 
-    private const string PREFIX = 'raw';
 
     public function __construct(
         private(set) string $rawClause,
         private(set) array  $bindings = [],
+        private(set) string $prefix = 'raw',
     ) {
     }
 
     public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
-        $prefix = self::PREFIX;
+        $prefix = $this->prefix;
 
         $preparedBindings = [];
         preg_match_all('/(\?)/', $this->rawClause, $placeholdersMatches, PREG_OFFSET_CAPTURE);

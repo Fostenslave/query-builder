@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SimpleORM\Grammar\Grammar;
 use SimpleORM\Grammar\SqliteGrammar;
 use SimpleORM\Query\QueryBuilder;
-use SimpleORM\Query\SelectColumn;
+use SimpleORM\Query\Expression;
 
 
 class QueryBuilderTest extends TestCase
@@ -26,7 +26,7 @@ class QueryBuilderTest extends TestCase
         $qb = new QueryBuilder($this->grammar, 'users');
 
         $qb = $qb->select('column1', 'column2', 'column3');
-        $this->assertEquals(['column1', 'column2', 'column3'], array_map(fn(SelectColumn $c) => $c->expression, $qb->columns));
+        $this->assertEquals(['column1', 'column2', 'column3'], array_map(fn(Expression $c) => $c->expression, $qb->columns));
     }
 
     public function testWheres(): void
@@ -109,7 +109,7 @@ class QueryBuilderTest extends TestCase
             ->limit(10)
             ->offset(20);
 
-        $this->assertEquals(['column1', 'column2', 'column3', 'lower(column2)'], array_map(fn(SelectColumn $c) => $c->expression, $qb->columns));
+        $this->assertEquals(['column1', 'column2', 'column3', 'lower(column2)'], array_map(fn(Expression $c) => $c->expression, $qb->columns));
         $this->assertCount(3, $qb->wheres);
         $this->assertCount(2, $qb->orderBys);
 

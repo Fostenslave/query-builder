@@ -6,7 +6,7 @@ namespace SimpleORM\Query;
 
 use SimpleORM\Grammar\Grammar;
 
-final readonly class SelectColumn implements Compilable
+final readonly class Expression implements Compilable
 {
     public function __construct(
         private(set) string $expression,

@@ -6,6 +6,7 @@ namespace SimpleORM\Grammar;
 
 use SimpleORM\Query\Compilable;
 use SimpleORM\Query\CompiledQuery;
+use SimpleORM\Query\Expression;
 
 abstract class BaseGrammar implements Grammar
 {
@@ -16,22 +17,22 @@ abstract class BaseGrammar implements Grammar
         array $joins,
         array $wheres,
         array $orderBys,
+        array $groupBys,
+        array $havings,
         ?int $limit,
         ?int $offset,
     ): CompiledQuery {
-        $compiledColumns = array_map(fn($column) =>  $column->compile($this)->sql, $columns);
-        $compiledColumns = array_unique($compiledColumns);
-        $columnsString = count($compiledColumns) > 0 ? implode(', ',$compiledColumns
-        ) : '*';
-        $sql = "SELECT $columnsString FROM " . $this->wrapTable($table);
-        $compiledWheres = $this->compileWheres($wheres);
-        $compiledOrderBys = $this->compileOrderBys($orderBys);
-        $compiledJoins = $this->compileJoins($joins);
-        $sql .= $compiledJoins->sql;
-        $sql .= $compiledWheres->sql;
-        $sql .= $compiledOrderBys->sql;
 
-        $bindings = $compiledWheres->bindings;
+        $sql = "SELECT " . $this->compileSelects($columns) ." FROM " . $this->wrapTable($table);
+        $compiledWheres = $this->compileWheres($wheres);
+        $compiledHavings = $this->compileHavings($havings);
+        $sql .= $this->compileJoins($joins)->sql;
+        $sql .= $compiledWheres->sql;
+        $sql .= $this->compileGroupBys($groupBys)->sql;
+        $sql .= $compiledHavings->sql;
+        $sql .= $this->compileOrderBys($orderBys)->sql;
+
+        $bindings = array_merge($compiledWheres->bindings, $compiledHavings->bindings);
 
         if (isset($limit) && $limit >= 0) {
             $sql .= " LIMIT $limit";
@@ -42,6 +43,14 @@ abstract class BaseGrammar implements Grammar
         }
 
         return new CompiledQuery($sql, $bindings);
+    }
+
+    public function compileSelects(array $columns): string
+    {
+        $compiledColumns = array_map(fn($column) =>  $column->compile($this)->sql, $columns);
+        $compiledColumns = array_unique($compiledColumns);
+        return count($compiledColumns) > 0 ? implode(', ',$compiledColumns
+        ) : '*';
     }
 
     /**
@@ -135,7 +144,7 @@ abstract class BaseGrammar implements Grammar
         return $this->wrapValue($table);
     }
 
-    public function wrapIdentifiers(array $columns)
+    public function wrapIdentifiers(array $columns): array
     {
         return array_map(fn($column) => $this->wrapTable($column), $columns);
     }
@@ -181,6 +190,40 @@ abstract class BaseGrammar implements Grammar
 
         return new CompiledQuery(
             ' WHERE ' . implode(' AND ', $whereSqlStrings),
+            $bindings
+        );
+    }
+
+    private function compileGroupBys(array $groupBys): CompiledQuery {
+        if (count($groupBys) === 0) {
+            return new CompiledQuery('', []);
+        }
+
+
+        return new CompiledQuery(
+            ' GROUP BY ' . implode(', ', array_map(fn (Expression $groupBy) => $groupBy->compile($this, 0)->sql, $groupBys)
+        ));
+    }
+
+    /**
+     * @param array<Compilable> $havings
+     */
+    private function compileHavings(array $havings): CompiledQuery {
+        if (count($havings) === 0) {
+            return new CompiledQuery('', []);
+        }
+
+        $havingSqlStrings = [];
+        $bindings = [];
+
+        foreach ($havings as $key => $having) {
+            $compiled = $having->compile($this, $key);
+            $havingSqlStrings[] = $compiled->sql;
+            $bindings = array_merge($bindings, $compiled->bindings);
+        }
+
+        return new CompiledQuery(
+            ' HAVING ' . implode(' AND ', $havingSqlStrings),
             $bindings
         );
     }

@@ -10,14 +10,13 @@ use SimpleORM\Grammar\Grammar;
 final readonly class WhereClause implements Compilable
 {
     // Разрешенные операторы по идее могут быть разные для разных SQL Grammar, но есть же стандарт SQL
-    private const string PREFIX = 'where';
-
     private const array ALLOWED_OPERATORS = ['=', '<', '>', '>=', '<=', '<>', '!='];
     private(set) string $column;
     private(set) string $operator;
+    private(set) string $prefix;
 
     private(set) mixed $value;
-    public function __construct(string $column, string|int $operator, mixed $value) {
+    public function __construct(string $column, string|int $operator, mixed $value, string $prefix = 'where') {
         $this->column = $column;
         if (trim($column) === '') {
             throw new DomainException('You cannot set empty column');
@@ -30,11 +29,12 @@ final readonly class WhereClause implements Compilable
 
         $this->operator = $operator;
         $this->value = $value;
+        $this->prefix = $prefix;
     }
 
     public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
     {
-        $prefix = self::PREFIX;
+        $prefix = $this->prefix;
         $bindingKey = ":{$prefix}_$sqlIndex";
         $wrappedColumn = $grammar->wrapTable($this->column);
 

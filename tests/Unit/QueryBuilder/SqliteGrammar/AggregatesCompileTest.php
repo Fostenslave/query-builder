@@ -8,11 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SimpleORM\Grammar\SqliteGrammar;
 use SimpleORM\Query\QueryBuilder;
 
-/**
- * Unit-тесты компиляции GROUP BY, HAVING, havingRaw.
- *
- * ЭТОТ ФАЙЛ УЖЕ ГОТОВ. Реализуй groupBy, having, havingRaw и компиляцию.
- */
+
 class AggregatesCompileTest extends TestCase
 {
     private SqliteGrammar $grammar;
@@ -22,7 +18,6 @@ class AggregatesCompileTest extends TestCase
         $this->grammar = new SqliteGrammar();
     }
 
-    // ── GROUP BY ────────────────────────────────────────────
 
     public function testGroupBySingleColumn(): void
     {

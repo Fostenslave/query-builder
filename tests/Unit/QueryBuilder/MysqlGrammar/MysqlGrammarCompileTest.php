@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SimpleORM\Grammar\MysqlGrammar;
 use SimpleORM\Query\JoinType;
 use SimpleORM\Query\JoinClause;
-use SimpleORM\Query\SelectColumn;
+use SimpleORM\Query\Expression;
 use SimpleORM\Query\WhereClause;
 
 
@@ -29,6 +29,8 @@ class MysqlGrammarCompileTest extends TestCase
             joins: [],
             wheres: [],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: null,
             offset: null,
         );
@@ -44,6 +46,8 @@ class MysqlGrammarCompileTest extends TestCase
             joins: [],
             wheres: [],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: null,
             offset: null,
         );
@@ -59,6 +63,8 @@ class MysqlGrammarCompileTest extends TestCase
             joins: [],
             wheres: [],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: null,
             offset: null,
         );
@@ -71,13 +77,15 @@ class MysqlGrammarCompileTest extends TestCase
         $compiled = $this->grammar->compileSelect(
             table: 'users',
             columns: [
-                new SelectColumn('id'),
-                new SelectColumn('name'),
-                new SelectColumn('lower(name) as my_name', isRaw: true)
+                new Expression('id'),
+                new Expression('name'),
+                new Expression('lower(name) as my_name', isRaw: true)
             ],
             joins: [],
             wheres: [new WhereClause('age', '>', 18)],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: 10,
             offset: null,
         );
@@ -94,6 +102,8 @@ class MysqlGrammarCompileTest extends TestCase
             joins: [new JoinClause('posts', JoinType::Inner, 'users.id', '=', 'posts.user_id')],
             wheres: [],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: null,
             offset: null,
         );
@@ -146,6 +156,8 @@ class MysqlGrammarCompileTest extends TestCase
             joins: [],
             wheres: [],
             orderBys: [],
+            groupBys: [],
+            havings: [],
             limit: null,
             offset: null,
         );

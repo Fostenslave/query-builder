@@ -20,7 +20,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawWithoutBindingsProducesRawSql(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->whereRaw('age > 20')
             ->compile();
 
@@ -30,7 +30,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawWithSingleBinding(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->whereRaw('age > ?', [20])
             ->compile();
 
@@ -40,7 +40,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawWithMultipleBindings(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->whereRaw('age > ? AND age < ?', [18, 65])
             ->compile();
 
@@ -53,7 +53,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawBindingKeysAreUniqueAcrossMixedWheres(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->where('active', '=', 1)           // :where_0
             ->whereRaw('age > ?', [20])         // :raw_1_0 (second where's index is 1)
             ->where('name', '=', 'Alice')       // :where_2
@@ -69,7 +69,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawTwoRawClausesHaveUniqueKeys(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->whereRaw('age > ?', [18])
             ->whereRaw('age < ?', [65])
             ->compile();
@@ -83,7 +83,7 @@ class WhereRawBindingsCompileTest extends TestCase
 
     public function testWhereRawBindingsStringValues(): void
     {
-        $compiled = (new QueryBuilder($this->grammar, 'users'))
+        $compiled = new QueryBuilder($this->grammar, 'users')
             ->whereRaw('name LIKE ?', ['%alice%'])
             ->compile();
 

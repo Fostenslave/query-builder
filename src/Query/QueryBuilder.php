@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SimpleORM\Query;
 
+use InvalidArgumentException;
 use RuntimeException;
 use SimpleORM\Grammar\Grammar;
 
@@ -10,9 +11,19 @@ class QueryBuilder implements QueryBuilderContract
 {
 
     /**
-     * @var array<SelectColumn>
+     * @var array<Expression>
      */
     private(set) array $columns = [];
+
+    /**
+     * @var array<Expression>
+     */
+    private(set) array $groupBys = [];
+
+    /**
+     * @var array<Expression>
+     */
+    private(set) array $havings = [];
 
     /**
      * @var array<JoinClause> $joins
@@ -51,7 +62,7 @@ class QueryBuilder implements QueryBuilderContract
     {
         $builder = clone($this);
         foreach ($columns as $column) {
-            $builder->columns[] = new SelectColumn($column);
+            $builder->columns[] = new Expression($column);
         }
         
         return $builder;
@@ -61,7 +72,7 @@ class QueryBuilder implements QueryBuilderContract
     {
         $builder = clone $this;
 
-        $builder->columns[] = new SelectColumn(expression: $expression, isRaw: true);
+        $builder->columns[] = new Expression(expression: $expression, isRaw: true);
         return $builder;
     }
 
@@ -98,7 +109,7 @@ class QueryBuilder implements QueryBuilderContract
     public function limit(int $limit): static
     {
         if ($limit < 0) {
-            throw new \InvalidArgumentException('Limit value should be greater or equals zero');
+            throw new InvalidArgumentException('Limit value should be greater or equals zero');
         }
 
         return clone($this, [
@@ -109,7 +120,7 @@ class QueryBuilder implements QueryBuilderContract
     public function offset(int $offset): static
     {
         if ($offset < 0) {
-            throw new \InvalidArgumentException('Offset value should be greater or equals zero');
+            throw new InvalidArgumentException('Offset value should be greater or equals zero');
         }
 
         return clone($this, [
@@ -125,6 +136,8 @@ class QueryBuilder implements QueryBuilderContract
             joins: $this->joins,
             wheres: $this->wheres,
             orderBys: $this->orderBys,
+            groupBys: $this->groupBys,
+            havings: $this->havings,
             limit: $this->limitValue,
             offset: $this->offsetValue);
     }
@@ -229,7 +242,7 @@ class QueryBuilder implements QueryBuilderContract
         $this->throwExceptionIfExecutorNotExists();
 
         $builder = clone($this, [
-            "columns" => [new SelectColumn('1')],
+            "columns" => [new Expression('1')],
             'limitValue' => 1,
         ]);
         return $builder->executor->fetch($builder->compile()) !== null;
@@ -240,5 +253,83 @@ class QueryBuilder implements QueryBuilderContract
         $this->throwExceptionIfExecutorNotExists();
         $builder = clone($this)->limit($perPage)->offset(($page - 1) * $perPage);
         return $builder->executor->fetchAll($builder->compile());
+    }
+
+    public function groupBy(string ...$columns): static
+    {
+        $builder = clone($this);
+        foreach ($columns as $column) {
+            $builder->groupBys[] = new Expression($column);
+        }
+        return $builder;
+    }
+
+    public function groupByRaw(string $expression): static
+    {
+        $builder = clone($this);
+        $builder->groupBys[] = new Expression($expression, isRaw: true);
+        return $builder;
+    }
+
+    public function having(string $column, string $operator, mixed $value): static
+    {
+        $builder = clone($this);
+        $builder->havings[] = new WhereClause($column, $operator, $value, 'having');
+        return $builder;
+    }
+
+    public function havingRaw(string $sql, array $bindings = []): static
+    {
+        $builder = clone $this;
+        $builder->havings[] = new RawClause($sql, $bindings, 'having_raw');
+        return $builder;
+    }
+
+    public function sum(string $column): mixed
+    {
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this, [
+            'columns' => [],
+        ]);
+        $wrappedColumn = $this->grammar->wrapTable($column);
+        $builder = $builder->selectRaw("sum($wrappedColumn)");
+        $row = $this->executor->fetch($builder->compile());
+        return $row ? array_first($row) : 0;
+    }
+
+    public function avg(string $column): mixed
+    {
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this, [
+            'columns' => [],
+        ]);
+        $wrappedColumn = $this->grammar->wrapTable($column);
+        $builder = $builder->selectRaw("avg($wrappedColumn)");
+        $row = $this->executor->fetch($builder->compile());
+        return $row ? array_first($row) : 0;
+    }
+
+    public function min(string $column): mixed
+    {
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this, [
+            'columns' => [],
+        ]);
+        $wrappedColumn = $this->grammar->wrapTable($column);
+        $builder = $builder->selectRaw("min($wrappedColumn)");
+        $row = $this->executor->fetch($builder->compile());
+        return $row ? array_first($row) : 0;
+    }
+
+    public function max(string $column): mixed
+    {
+        $this->throwExceptionIfExecutorNotExists();
+        $builder = clone($this, [
+            'columns' => [],
+        ]);
+        $wrappedColumn = $this->grammar->wrapTable($column);
+        $builder = $builder->selectRaw("max($wrappedColumn)");
+        $row = $this->executor->fetch($builder->compile());
+        return $row ? array_first($row) : 0;
     }
 }
