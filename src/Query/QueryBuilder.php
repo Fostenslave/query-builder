@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace SimpleORM\Query;
+namespace Fostenslave\QueryBuilder\Query;
 
 use InvalidArgumentException;
 use RuntimeException;
-use SimpleORM\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 class QueryBuilder implements QueryBuilderContract
 {

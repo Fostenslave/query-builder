@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Tests\Unit\QueryBuilder\MysqlGrammar;
+namespace Fostenslave\QueryBuilder\Tests\Unit\QueryBuilder\MysqlGrammar;
 
 use PHPUnit\Framework\TestCase;
-use SimpleORM\Grammar\MysqlGrammar;
-use SimpleORM\Query\QueryBuilder;
+use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
+use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
 /**
  * Unit-тесты компиляции GROUP BY, HAVING для MySQL — backticks.

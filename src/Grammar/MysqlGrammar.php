@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Grammar;
+namespace Fostenslave\QueryBuilder\Grammar;
 
 class MysqlGrammar extends BaseGrammar implements Grammar
 {

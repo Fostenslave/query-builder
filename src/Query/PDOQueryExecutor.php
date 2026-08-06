@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Query;
+namespace Fostenslave\QueryBuilder\Query;
 readonly class PDOQueryExecutor implements QueryExecutor
 {
     public function __construct(private \PDO $pdo)

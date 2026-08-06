@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Query;
+namespace Fostenslave\QueryBuilder\Query;
 
-use SimpleORM\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final readonly class JoinClause implements Compilable
 {

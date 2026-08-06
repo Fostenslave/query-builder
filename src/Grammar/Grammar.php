@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Grammar;
+namespace Fostenslave\QueryBuilder\Grammar;
 
-use SimpleORM\Query\CompiledQuery;
-use SimpleORM\Query\JoinClause;
-use SimpleORM\Query\OrderByClause;
-use SimpleORM\Query\RawClause;
-use SimpleORM\Query\Expression;
-use SimpleORM\Query\WhereClause;
+use Fostenslave\QueryBuilder\Query\CompiledQuery;
+use Fostenslave\QueryBuilder\Query\JoinClause;
+use Fostenslave\QueryBuilder\Query\OrderByClause;
+use Fostenslave\QueryBuilder\Query\RawClause;
+use Fostenslave\QueryBuilder\Query\Expression;
+use Fostenslave\QueryBuilder\Query\WhereClause;
 
 /**
  * Точка расширения для разных СУБД.

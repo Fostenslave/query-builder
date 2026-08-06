@@ -1,6 +1,6 @@
 {
-    "name": "simple-orm/query-builder",
-    "description": "Immutable, PDO-based SQL query builder with compile-time dialect support (SQLite, MySQL, PostgreSQL)",
+    "name": "fostenslave/query-builder",
+    "description": "Immutable, inspired by Laravel, PDO-based SQL query builder with compile-time dialect support (SQLite, MySQL, PostgreSQL)",
     "version": "0.1",
     "type": "library",
     "license": "MIT",
@@ -30,12 +30,13 @@
     },
     "autoload": {
         "psr-4": {
-            "SimpleORM\\": "src/"
+            "Fostenslave\\QueryBuilder\\": "src/"
+
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SimpleORM\\Tests\\": "tests/"
+            "Fostenslave\\QueryBuilder\\Tests\\": "tests/"
         }
     }
 }

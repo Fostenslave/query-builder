@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Tests\Unit\QueryBuilder\SqliteGrammar;
+namespace Fostenslave\QueryBuilder\Tests\Unit\QueryBuilder\SqliteGrammar;
 
 use PHPUnit\Framework\TestCase;
-use SimpleORM\Grammar\Grammar;
-use SimpleORM\Grammar\SqliteGrammar;
-use SimpleORM\Query\QueryBuilder;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
+use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
 class QueryBuilderJoinCompileTest extends TestCase
 {

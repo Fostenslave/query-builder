@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Tests\Unit\QueryBuilder;
+namespace Fostenslave\QueryBuilder\Tests\Unit\QueryBuilder;
 
 use PHPUnit\Framework\TestCase;
-use SimpleORM\Grammar\Grammar;
-use SimpleORM\Grammar\SqliteGrammar;
-use SimpleORM\Query\QueryBuilder;
-use SimpleORM\Query\Expression;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
+use Fostenslave\QueryBuilder\Query\QueryBuilder;
+use Fostenslave\QueryBuilder\Query\Expression;
 
 
 class QueryBuilderTest extends TestCase

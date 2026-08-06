@@ -1,15 +1,15 @@
 <?php
 
-namespace SimpleORM\Database;
+namespace Fostenslave\QueryBuilder\Database;
 
 use Closure;
 use PDO;
-use SimpleORM\Grammar\Grammar;
-use SimpleORM\Grammar\SqliteGrammar;
-use SimpleORM\Query\PDOQueryExecutor;
-use SimpleORM\Query\QueryBuilder;
-use SimpleORM\Query\QueryBuilderContract;
-use SimpleORM\Query\QueryExecutor;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
+use Fostenslave\QueryBuilder\Query\PDOQueryExecutor;
+use Fostenslave\QueryBuilder\Query\QueryBuilder;
+use Fostenslave\QueryBuilder\Query\QueryBuilderContract;
+use Fostenslave\QueryBuilder\Query\QueryExecutor;
 use Throwable;
 
 class DB implements TransactionManager

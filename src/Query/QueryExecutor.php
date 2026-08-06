@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Query;
+namespace Fostenslave\QueryBuilder\Query;
 
 /**
  * Выполняет собранный запрос через PDO и возвращает результат.

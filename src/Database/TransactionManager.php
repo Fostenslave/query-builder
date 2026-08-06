@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Database;
+namespace Fostenslave\QueryBuilder\Database;
 
 use Closure;
 use Throwable;

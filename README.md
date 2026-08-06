@@ -1,4 +1,4 @@
-# SimpleORM Query Builder
+# Query Builder
 
 Immutable, PDO SQL query builder with compile-time dialect support.
 
@@ -16,7 +16,7 @@ composer require simple-orm/query-builder
 ## Quick start
 
 ```php
-use SimpleORM\Database\DB;
+use Fostenslave\QueryBuilder\Database\DB;
 
 $pdo = new PDO('sqlite:app.db');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -118,7 +118,7 @@ try {
 ### MySQL
 
 ```php
-use SimpleORM\Grammar\MysqlGrammar;
+use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
 
 $mysqlPdo = new PDO('mysql:host=127.0.0.1;dbname=app', 'user', 'pass');
 $db = new DB($mysqlPdo, new MysqlGrammar());

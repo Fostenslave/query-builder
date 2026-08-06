@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Tests\Unit\QueryBuilder\MysqlGrammar;
+namespace Fostenslave\QueryBuilder\Tests\Unit\QueryBuilder\MysqlGrammar;
 
 use PHPUnit\Framework\TestCase;
-use SimpleORM\Grammar\MysqlGrammar;
-use SimpleORM\Query\JoinType;
-use SimpleORM\Query\JoinClause;
-use SimpleORM\Query\Expression;
-use SimpleORM\Query\WhereClause;
+use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
+use Fostenslave\QueryBuilder\Query\JoinType;
+use Fostenslave\QueryBuilder\Query\JoinClause;
+use Fostenslave\QueryBuilder\Query\Expression;
+use Fostenslave\QueryBuilder\Query\WhereClause;
 
 
 class MysqlGrammarCompileTest extends TestCase

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Tests\Integration\DB;
+namespace Fostenslave\QueryBuilder\Tests\Integration\DB;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use SimpleORM\Database\DB;
+use Fostenslave\QueryBuilder\Database\DB;
 
 /**
  * Тесты агрегатов: GROUP BY, HAVING, sum/avg/min/max.

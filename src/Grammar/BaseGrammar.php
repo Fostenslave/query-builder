@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Grammar;
+namespace Fostenslave\QueryBuilder\Grammar;
 
-use SimpleORM\Query\Compilable;
-use SimpleORM\Query\CompiledQuery;
-use SimpleORM\Query\Expression;
+use Fostenslave\QueryBuilder\Query\Compilable;
+use Fostenslave\QueryBuilder\Query\CompiledQuery;
+use Fostenslave\QueryBuilder\Query\Expression;
 
 abstract class BaseGrammar implements Grammar
 {

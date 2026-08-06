@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SimpleORM\Query;
+namespace Fostenslave\QueryBuilder\Query;
 
 use DomainException;
-use SimpleORM\Grammar\Grammar;
+use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final readonly class RawClause implements Compilable
 {
