@@ -1,12 +1,24 @@
 {
     "name": "simple-orm/query-builder",
     "description": "Immutable, PDO-based SQL query builder with compile-time dialect support (SQLite, MySQL, PostgreSQL)",
+    "version": "0.1",
     "type": "library",
     "license": "MIT",
     "keywords": ["query-builder", "sql", "pdo", "sqlite", "mysql"],
     "require": {
         "php": ">=8.5",
         "ext-pdo": "*"
+    },
+    "authors": [
+        {
+            "name": "Vyacheslav Prudovskiy",
+            "email": "slavec56@gmail.com",
+            "role": "Creator"
+        }
+    ],
+    "support": {
+        "email": "slavec56@gmail.com",
+        "issues": "https://github.com/Fostenslave/simple-query-builder/issues"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
