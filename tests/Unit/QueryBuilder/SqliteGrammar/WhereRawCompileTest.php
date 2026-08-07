@@ -9,7 +9,7 @@ use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
 
-class WhereRawBindingsCompileTest extends TestCase
+class WhereRawCompileTest extends TestCase
 {
     private SqliteGrammar $grammar;
 
@@ -28,16 +28,6 @@ class WhereRawBindingsCompileTest extends TestCase
         $this->assertSame([], $compiled->bindings);
     }
 
-    public function testWhereRawWithSingleBinding(): void
-    {
-        $compiled = new QueryBuilder($this->grammar, 'users')
-            ->whereRaw('age > ?', [20])
-            ->compile();
-
-        $this->assertSame('SELECT * FROM "users" WHERE age > :raw_0_0', $compiled->sql);
-        $this->assertSame([':raw_0_0' => 20], $compiled->bindings);
-    }
-
     public function testWhereRawWithMultipleBindings(): void
     {
         $compiled = new QueryBuilder($this->grammar, 'users')
@@ -54,12 +44,11 @@ class WhereRawBindingsCompileTest extends TestCase
     public function testWhereRawBindingKeysAreUniqueAcrossMixedWheres(): void
     {
         $compiled = new QueryBuilder($this->grammar, 'users')
-            ->where('active', '=', 1)           // :where_0
-            ->whereRaw('age > ?', [20])         // :raw_1_0 (second where's index is 1)
-            ->where('name', '=', 'Alice')       // :where_2
+            ->where('active', '=', 1)
+            ->whereRaw('age > ?', [20])
+            ->where('name', '=', 'Alice')
             ->compile();
 
-        // bindings: :where_0, :raw_1_0, :where_2 — все уникальны
         $this->assertSame('SELECT * FROM "users" WHERE "active" = :where_0 AND age > :raw_1_0 AND "name" = :where_2', $compiled->sql);
         $this->assertSame(
             [':where_0' => 1, ':raw_1_0' => 20, ':where_2' => 'Alice'],

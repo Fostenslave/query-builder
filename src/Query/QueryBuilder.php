@@ -78,10 +78,17 @@ class QueryBuilder implements QueryBuilderContract
     }
 
 
-    public function where(string $column, string $operator, mixed $value = null): static
+    public function where(callable|string $column, string $operator = '', mixed $value = null): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereClause($column, $operator, $value);
+
+        if (is_callable($column)) {
+            $prefixCount = count($builder->wheres);
+            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::AND, "where_$prefixCount");
+            return $builder;
+        }
+
+        $builder->wheres[] = new WhereClause($column, $operator, $value, 'where', BooleanOperator::AND);
         return $builder;
     }
 
@@ -98,6 +105,34 @@ class QueryBuilder implements QueryBuilderContract
     public function whereEquals(string $column, mixed $value): static
     {
         return $this->where($column, '=', $value);
+    }
+
+    public function whereRaw(string $sql, array $bindings = []): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new RawClause($sql, $bindings);
+        return $builder;
+    }
+
+    public function orWhere(string|callable $column, string $operator = '', mixed $value = null): static
+    {
+        $builder = clone $this;
+
+        if (is_callable($column)) {
+            $prefixCount = count($builder->wheres);
+            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::OR, "where_$prefixCount");
+            return $builder;
+        }
+
+        $builder->wheres[] = new WhereClause($column, $operator, $value, 'where', BooleanOperator::OR);
+        return $builder;
+    }
+
+    public function orWhereRaw(string $sql, array $bindings = []): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new RawClause($sql, $bindings, 'raw', BooleanOperator::OR);
+        return $builder;
     }
 
     public function orderBy(string $column, string $direction = 'ASC'): static
@@ -222,13 +257,6 @@ class QueryBuilder implements QueryBuilderContract
     }
 
 
-    public function whereRaw(string $sql, array $bindings = []): static
-    {
-        $builder = clone $this;
-        $builder->wheres[] = new RawClause($sql, $bindings);
-        return $builder;
-    }
-
     public function count(): int
     {
         $this->throwExceptionIfExecutorNotExists();
@@ -317,4 +345,6 @@ class QueryBuilder implements QueryBuilderContract
         $row = $this->executor->fetch($builder->compile());
         return $row ? array_first($row) : 0;
     }
+
+
 }

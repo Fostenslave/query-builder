@@ -7,14 +7,13 @@ namespace Fostenslave\QueryBuilder\Query;
 use DomainException;
 use Fostenslave\QueryBuilder\Grammar\Grammar;
 
-final readonly class RawClause implements Compilable
+final readonly class RawClause implements CompilableLogic
 {
-
-
     public function __construct(
         private(set) string $rawClause,
         private(set) array  $bindings = [],
         private(set) string $prefix = 'raw',
+        private(set) BooleanOperator $boolean = BooleanOperator::AND
     ) {
     }
 
@@ -63,5 +62,8 @@ final readonly class RawClause implements Compilable
     }
 
 
-
+    public function getBoolean(): BooleanOperator
+    {
+        return $this->boolean;
+    }
 }

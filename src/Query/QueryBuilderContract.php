@@ -39,11 +39,20 @@ interface QueryBuilderContract
     /**
      * Добавляет условие WHERE (через AND).
      *
-     * @param string $column   Имя колонки.
-     * @param string $operator '=', '!=', '>', '<', '>=', '<=', 'LIKE'
-     * @param mixed  $value    Значение (передаётся через плейсхолдер, не вклеивается в SQL).
+     * @param string|callable $column   Имя колонки ИЛИ callable для группы условий: where(function($g) { ... })
+     * @param string          $operator '=', '!=', '>', '<', '>=', '<='
+     * @param mixed           $value    Значение (передаётся через плейсхолдер, не вклеивается в SQL).
      */
-    public function where(string $column, string $operator, mixed $value): static;
+    public function where(string|callable $column, string $operator = '', mixed $value = null): static;
+
+    /**
+     * Добавляет условие WHERE через OR.
+     *
+     * @param string          $column   Имя колонки.
+     * @param string          $operator '=', '!=', '>', '<', '>=', '<='
+     * @param mixed           $value    Значение (через плейсхолдер).
+     */
+    public function orWhere(string $column, string $operator, mixed $value): static;
 
     /**
      * Добавляет сортировку ORDER BY.
@@ -149,9 +158,17 @@ interface QueryBuilderContract
      *   whereRaw('age > ?', [$minAge])
      *
      * @param string $sql       Сырой SQL ('age > ?', 'age > ? AND active = ?').
-     * @param array  $bindings  Значения для ? — в порядке следования.
+     * @param array  $bindings  Значения для ? и :name — в порядке следования.
      */
     public function whereRaw(string $sql, array $bindings = []): static;
+
+    /**
+     * Добавляет условие WHERE через OR с сырым SQL-выражением.
+     *
+     * @param string $sql       Сырой SQL ('role = ?').
+     * @param array  $bindings  Значения для ?.
+     */
+    public function orWhereRaw(string $sql, array $bindings = []): static;
 
     /**
      * Возвращает количество строк запроса (SELECT COUNT(*)).

@@ -7,7 +7,7 @@ namespace Fostenslave\QueryBuilder\Query;
 use DomainException;
 use Fostenslave\QueryBuilder\Grammar\Grammar;
 
-final readonly class WhereClause implements Compilable
+final readonly class WhereClause implements CompilableLogic
 {
     private const array ALLOWED_OPERATORS = ['=', '<', '>', '>=', '<=', '<>', '!='];
     private(set) string $column;
@@ -15,7 +15,8 @@ final readonly class WhereClause implements Compilable
     private(set) string $prefix;
 
     private(set) mixed $value;
-    public function __construct(string $column, string|int $operator, mixed $value, string $prefix = 'where') {
+    private(set) BooleanOperator $boolean;
+    public function __construct(string $column, string|int $operator, mixed $value, string $prefix = 'where', BooleanOperator $boolean = BooleanOperator::AND) {
         $this->column = $column;
         if (trim($column) === '') {
             throw new DomainException('You cannot set empty column');
@@ -29,6 +30,7 @@ final readonly class WhereClause implements Compilable
         $this->operator = $operator;
         $this->value = $value;
         $this->prefix = $prefix;
+        $this->boolean = $boolean;
     }
 
     public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
@@ -53,5 +55,10 @@ final readonly class WhereClause implements Compilable
     private function isOperator(string|int $string): bool
     {
         return in_array($string, self::ALLOWED_OPERATORS);
+    }
+
+    public function getBoolean(): BooleanOperator
+    {
+       return $this->boolean;
     }
 }

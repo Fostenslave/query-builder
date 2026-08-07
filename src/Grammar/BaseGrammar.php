@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fostenslave\QueryBuilder\Grammar;
 
 use Fostenslave\QueryBuilder\Query\Compilable;
+use Fostenslave\QueryBuilder\Query\CompilableLogic;
 use Fostenslave\QueryBuilder\Query\CompiledQuery;
 use Fostenslave\QueryBuilder\Query\Expression;
 
@@ -32,7 +33,7 @@ abstract class BaseGrammar implements Grammar
         $sql .= $compiledHavings->sql;
         $sql .= $this->compileOrderBys($orderBys)->sql;
 
-        $bindings = array_merge($compiledWheres->bindings, $compiledHavings->bindings);
+        $bindings = array_merge_recursive($compiledWheres->bindings, $compiledHavings->bindings);
 
         if (isset($limit) && $limit >= 0) {
             $sql .= " LIMIT $limit";
@@ -99,7 +100,7 @@ abstract class BaseGrammar implements Grammar
         $wheresCompiled = $this->compileWheres($wheres);
         $wheresCompiledString = $wheresCompiled->sql;
 
-        $bindings = array_merge($bindings, $wheresCompiled->bindings);
+        $bindings = array_merge_recursive($bindings, $wheresCompiled->bindings);
 
         return new CompiledQuery(
             "UPDATE $table SET $valuesString" . $wheresCompiledString,
@@ -172,24 +173,29 @@ abstract class BaseGrammar implements Grammar
     }
 
     /**
-     * @param array<Compilable> $wheres
+     * @param array<CompilableLogic> $wheres
      */
     private function compileWheres(array $wheres): CompiledQuery {
         if (count($wheres) === 0) {
             return new CompiledQuery('', []);
         }
 
-        $whereSqlStrings = [];
         $bindings = [];
 
+        $resultConditions = '';
         foreach ($wheres as $key => $where) {
             $compiled = $where->compile($this, $key);
-            $whereSqlStrings[] = $compiled->sql;
-            $bindings = array_merge($bindings, $compiled->bindings);
+            $bindings = array_merge_recursive($bindings, $compiled->bindings);
+            $boolean = $where->getBoolean();
+            if ($key === 0) {
+                $resultConditions .= "$compiled->sql";
+            } else {
+                $resultConditions .= " $boolean->value $compiled->sql";
+            }
         }
 
         return new CompiledQuery(
-            ' WHERE ' . implode(' AND ', $whereSqlStrings),
+            ' WHERE ' . $resultConditions,
             $bindings
         );
     }
@@ -219,7 +225,7 @@ abstract class BaseGrammar implements Grammar
         foreach ($havings as $key => $having) {
             $compiled = $having->compile($this, $key);
             $havingSqlStrings[] = $compiled->sql;
-            $bindings = array_merge($bindings, $compiled->bindings);
+            $bindings = array_merge_recursive($bindings, $compiled->bindings);
         }
 
         return new CompiledQuery(
