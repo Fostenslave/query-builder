@@ -21,12 +21,11 @@ final class ConditionGroupBuilder implements CompilableLogic
         $this->wheres = [];
     }
 
-    public function where(callable|string $column, string $operator = '', mixed $value = null): ConditionGroupBuilder
+    public function where(callable|string $column, string $operator = '', mixed $value = null): self
     {
 
         if (is_callable($column)) {
-            $prefixCount = count($this->wheres);
-            $this->wheres[] = new ConditionGroup($column, BooleanOperator::AND, $this->prefix . "_$prefixCount");
+            $this->wheres[] = new ConditionGroup($column, BooleanOperator::AND, $this->getWherePrefix());
             return $this;
         }
 
@@ -34,11 +33,10 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
-    public function orWhere(callable|string $column, string $operator = '', mixed $value = null): ConditionGroupBuilder
+    public function orWhere(callable|string $column, string $operator = '', mixed $value = null): self
     {
         if (is_callable($column)) {
-            $prefixCount = count($this->wheres);
-            $this->wheres[] = new ConditionGroup($column, BooleanOperator::OR, $this->prefix . "_$prefixCount");
+            $this->wheres[] = new ConditionGroup($column, BooleanOperator::OR, $this->getWherePrefix());
             return $this;
         }
 
@@ -46,16 +44,40 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
-    public function whereRaw(string $sql, array $bindings = []): ConditionGroupBuilder
+    public function whereRaw(string $sql, array $bindings = []): self
     {
 
         $this->wheres[] = new RawClause($sql, $bindings, $this->prefix);
         return $this;
     }
 
-    public function orWhereRaw(string $sql, array $bindings = []): ConditionGroupBuilder
+    public function orWhereRaw(string $sql, array $bindings = []): self
     {
         $this->wheres[] = new RawClause($sql, $bindings, $this->prefix, BooleanOperator::OR);
+        return $this;
+    }
+
+    public function whereIn(string $column, array $values): self
+    {
+        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::AND);
+        return $this;
+    }
+
+    public function whereNotIn(string $column, array $values): self
+    {
+        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::AND);
+        return $this;
+    }
+
+    public function orWhereIn(string $column, array $values): self
+    {
+        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        return $this;
+    }
+
+    public function orWhereNotIn(string $column, array $values): self
+    {
+        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
         return $this;
     }
 
@@ -81,5 +103,11 @@ final class ConditionGroupBuilder implements CompilableLogic
     public function getBoolean(): BooleanOperator
     {
        return $this->boolean;
+    }
+
+    private function getWherePrefix(): string
+    {
+        $prefixCount = count($this->wheres);
+        return $this->prefix . "_$prefixCount";
     }
 }

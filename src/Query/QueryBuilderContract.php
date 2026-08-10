@@ -171,6 +171,38 @@ interface QueryBuilderContract
     public function orWhereRaw(string $sql, array $bindings = []): static;
 
     /**
+     * Добавляет условие WHERE column IN (values) (через AND).
+     *
+     * @param string $column Имя колонки.
+     * @param array  $values Массив значений.
+     */
+    public function whereIn(string $column, array $values): static;
+
+    /**
+     * Добавляет условие WHERE column NOT IN (values) (через AND).
+     *
+     * @param string $column Имя колонки.
+     * @param array  $values Массив значений.
+     */
+    public function whereNotIn(string $column, array $values): static;
+
+    /**
+     * Добавляет условие WHERE column IN (values) через OR.
+     *
+     * @param string $column Имя колонки.
+     * @param array  $values Массив значений.
+     */
+    public function orWhereIn(string $column, array $values): static;
+
+    /**
+     * Добавляет условие WHERE column NOT IN (values) через OR.
+     *
+     * @param string $column Имя колонки.
+     * @param array  $values Массив значений.
+     */
+    public function orWhereNotIn(string $column, array $values): static;
+
+    /**
      * Возвращает количество строк запроса (SELECT COUNT(*)).
      *
      * Терминальный метод.

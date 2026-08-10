@@ -83,8 +83,7 @@ class QueryBuilder implements QueryBuilderContract
         $builder = clone $this;
 
         if (is_callable($column)) {
-            $prefixCount = count($builder->wheres);
-            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::AND, "where_$prefixCount");
+            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::AND, $this->getWherePrefix());
             return $builder;
         }
 
@@ -119,8 +118,7 @@ class QueryBuilder implements QueryBuilderContract
         $builder = clone $this;
 
         if (is_callable($column)) {
-            $prefixCount = count($builder->wheres);
-            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::OR, "where_$prefixCount");
+            $builder->wheres[] = new ConditionGroup($column, BooleanOperator::OR, $this->getWherePrefix());
             return $builder;
         }
 
@@ -134,6 +132,35 @@ class QueryBuilder implements QueryBuilderContract
         $builder->wheres[] = new RawClause($sql, $bindings, 'raw', BooleanOperator::OR);
         return $builder;
     }
+
+    public function whereIn(string $column, array $values): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::AND);
+        return $builder;
+    }
+
+    public function whereNotIn(string $column, array $values): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::AND);
+        return $builder;
+    }
+
+    public function orWhereIn(string $column, array $values): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        return $builder;
+    }
+
+    public function orWhereNotIn(string $column, array $values): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        return $builder;
+    }
+
 
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
@@ -219,7 +246,6 @@ class QueryBuilder implements QueryBuilderContract
     public function compileUpdate(array $values): CompiledQuery
     {
         return $this->grammar->compileUpdate($this->table, $values, $this->wheres);
-
     }
 
     public function compileDelete(): CompiledQuery
@@ -233,14 +259,12 @@ class QueryBuilder implements QueryBuilderContract
         $this->throwExceptionIfExecutorNotExists();
         $this->executor->execute($this->compileInsert($values));
         return (int)$this->executor->lastInsertId();
-
     }
 
     public function update(array $values): int
     {
         $this->throwExceptionIfExecutorNotExists();
         return $this->executor->execute($this->compileUpdate($values));
-
     }
 
     public function delete(): int
@@ -344,6 +368,12 @@ class QueryBuilder implements QueryBuilderContract
         $builder = $builder->selectRaw("$functionName($wrappedColumn)");
         $row = $this->executor->fetch($builder->compile());
         return $row ? array_first($row) : 0;
+    }
+
+    private function getWherePrefix(): string
+    {
+        $prefixCount = count($this->wheres);
+        return "where_$prefixCount";
     }
 
 
