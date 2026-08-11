@@ -33,7 +33,7 @@ final readonly class WhereClause implements CompilableLogic
         $this->boolean = $boolean;
     }
 
-    public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
+    public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
         $prefix = $this->prefix;
         $bindingKey = ":{$prefix}_$sqlIndex";

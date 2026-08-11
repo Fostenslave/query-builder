@@ -60,4 +60,6 @@ interface Grammar
     public function compileDelete(string $table, array $wheres): CompiledQuery;
 
     public function getCountExpression(): string;
+
+    public function wrapTable(string $table): string;
 }

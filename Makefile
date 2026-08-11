@@ -1,4 +1,4 @@
-.PHONY: init build up down restart shell composer test php clean help
+.PHONY: init build up down restart shell composer test phpstan php clean help
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -30,6 +30,9 @@ composer-update: ## Update composer dev dependencies
 	docker compose run --rm query-builder-php-cli composer update --lock
 test: ## Run PHPUnit tests. Usage: make test ARGS="--filter FooTest"
 	docker compose run --rm query-builder-php-cli vendor/bin/phpunit $(ARGS)
+phpstan: ## Run phpstan static code analyzer
+	docker compose run --rm query-builder-php-cli vendor/bin/phpstan analyse --memory-limit=1G
+check-q: phpstan test ## Runs tests and code analyzers
 
 php: ## Run PHP inside container. Usage: make php ARGS="-r 'echo 1;'"
 	docker compose run --rm query-builder-php-cli php $(ARGS)

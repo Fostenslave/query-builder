@@ -46,6 +46,9 @@ abstract class BaseGrammar implements Grammar
         return new CompiledQuery($sql, $bindings);
     }
 
+    /**
+     * @param array<Compilable> $columns
+     */
     public function compileSelects(array $columns): string
     {
         $compiledColumns = array_map(fn($column) =>  $column->compile($this)->sql, $columns);
@@ -145,6 +148,11 @@ abstract class BaseGrammar implements Grammar
         return $this->wrapValue($table);
     }
 
+
+    /**
+     * @param array<string> $columns
+     * @return array<string>
+     */
     public function wrapIdentifiers(array $columns): array
     {
         return array_map(fn($column) => $this->wrapTable($column), $columns);
@@ -200,6 +208,9 @@ abstract class BaseGrammar implements Grammar
         );
     }
 
+    /**
+     * @param array<Compilable> $groupBys
+     */
     private function compileGroupBys(array $groupBys): CompiledQuery {
         if (count($groupBys) === 0) {
             return new CompiledQuery('', []);
@@ -207,7 +218,7 @@ abstract class BaseGrammar implements Grammar
 
 
         return new CompiledQuery(
-            ' GROUP BY ' . implode(', ', array_map(fn (Expression $groupBy) => $groupBy->compile($this, 0)->sql, $groupBys)
+            ' GROUP BY ' . implode(', ', array_map(fn (Compilable $groupBy) => $groupBy->compile($this, 0)->sql, $groupBys)
         ));
     }
 

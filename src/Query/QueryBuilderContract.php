@@ -48,11 +48,11 @@ interface QueryBuilderContract
     /**
      * Добавляет условие WHERE через OR.
      *
-     * @param string          $column   Имя колонки.
-     * @param string          $operator '=', '!=', '>', '<', '>=', '<='
-     * @param mixed           $value    Значение (через плейсхолдер).
+     * @param string|callable $column Имя колонки или callable для группы условий: where(function($g) { ... })
+     * @param string $operator '=', '!=', '>', '<', '>=', '<='
+     * @param mixed $value Значение (через плейсхолдер).
      */
-    public function orWhere(string $column, string $operator, mixed $value): static;
+    public function orWhere(string|callable $column, string $operator, mixed $value): static;
 
     /**
      * Добавляет сортировку ORDER BY.
@@ -154,11 +154,11 @@ interface QueryBuilderContract
     /**
      * Добавляет условие WHERE с сырым SQL-выражением.
      *
-     * Для динамических значений используйте ? и $bindings:
-     *   whereRaw('age > ?', [$minAge])
+     * Для динамических значений используйте "?" и $bindings:
+     * whereRaw('age > ?', [$minAge])
      *
      * @param string $sql       Сырой SQL ('age > ?', 'age > ? AND active = ?').
-     * @param array  $bindings  Значения для ? и :name — в порядке следования.
+     * @param array<mixed>  $bindings  Значения для ? и :name — в порядке следования.
      */
     public function whereRaw(string $sql, array $bindings = []): static;
 
@@ -166,7 +166,7 @@ interface QueryBuilderContract
      * Добавляет условие WHERE через OR с сырым SQL-выражением.
      *
      * @param string $sql       Сырой SQL ('role = ?').
-     * @param array  $bindings  Значения для ?.
+     * @param array<mixed>  $bindings  Значения для ?.
      */
     public function orWhereRaw(string $sql, array $bindings = []): static;
 
@@ -174,7 +174,7 @@ interface QueryBuilderContract
      * Добавляет условие WHERE column IN (values) (через AND).
      *
      * @param string $column Имя колонки.
-     * @param array  $values Массив значений.
+     * @param array<int, mixed>  $values Массив значений.
      */
     public function whereIn(string $column, array $values): static;
 
@@ -182,7 +182,7 @@ interface QueryBuilderContract
      * Добавляет условие WHERE column NOT IN (values) (через AND).
      *
      * @param string $column Имя колонки.
-     * @param array  $values Массив значений.
+     * @param array<int, mixed>  $values Массив значений.
      */
     public function whereNotIn(string $column, array $values): static;
 
@@ -190,7 +190,7 @@ interface QueryBuilderContract
      * Добавляет условие WHERE column IN (values) через OR.
      *
      * @param string $column Имя колонки.
-     * @param array  $values Массив значений.
+     * @param array<int, mixed> $values Массив значений.
      */
     public function orWhereIn(string $column, array $values): static;
 
@@ -198,7 +198,7 @@ interface QueryBuilderContract
      * Добавляет условие WHERE column NOT IN (values) через OR.
      *
      * @param string $column Имя колонки.
-     * @param array  $values Массив значений.
+     * @param array<int, mixed>  $values Массив значений.
      */
     public function orWhereNotIn(string $column, array $values): static;
 
@@ -237,7 +237,6 @@ interface QueryBuilderContract
      * Добавляет GROUP BY по сырому выражению
      *
      * @param string $expression
-     * @return QueryBuilderContract
      */
     public function groupByRaw(string $expression): static;
 
@@ -254,7 +253,7 @@ interface QueryBuilderContract
      * Добавляет сырое условие HAVING с плейсхолдерами.
      *
      * @param string $sql       Сырой SQL ('SUM(amount) > ?').
-     * @param array  $bindings  Значения для ?.
+     * @param array<mixed>  $bindings  Значения для ?.
      */
     public function havingRaw(string $sql, array $bindings = []): static;
 

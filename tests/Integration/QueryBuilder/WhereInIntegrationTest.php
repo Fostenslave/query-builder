@@ -39,6 +39,10 @@ class WhereInIntegrationTest extends TestCase
         return new QueryBuilder(new SqliteGrammar(), 'users');
     }
 
+    /**
+     * @param QueryBuilder $builder
+     * @return array<mixed>
+     */
     private function execute(QueryBuilder $builder): array
     {
         $compiled = $builder->compile();

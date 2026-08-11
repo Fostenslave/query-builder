@@ -11,9 +11,17 @@ final readonly class WhereInClause implements CompilableLogic
 {
     private(set) string $column;
     private(set) string $prefix;
+
+    /**
+     * @var array<int, mixed>
+     */
     private(set) array $values;
     private(set) bool $not;
     private(set) BooleanOperator $boolean;
+
+    /**
+     * @param array<int, mixed> $values
+     */
     public function __construct(string $column, array $values, string $prefix = 'where', bool $not = false, BooleanOperator $boolean = BooleanOperator::AND) {
         $this->column = $column;
         if (trim($column) === '') {
@@ -31,7 +39,7 @@ final readonly class WhereInClause implements CompilableLogic
         $this->not = $not;
     }
 
-    public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
+    public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
         $wrappedColumn = $grammar->wrapTable($this->column);
 

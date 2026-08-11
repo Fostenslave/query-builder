@@ -21,7 +21,7 @@ class QueryBuilderTest extends TestCase
     }
 
 
-    public function testSelect()
+    public function testSelect(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
 
@@ -70,7 +70,7 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals('ASC', $numberOrderBy->direction);
     }
 
-    public function testInvalidSortDirection()
+    public function testInvalidSortDirection(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);
@@ -95,7 +95,7 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals(20, $qb->offsetValue);
     }
 
-    public function testFullQuery()
+    public function testFullQuery(): void
     {
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);

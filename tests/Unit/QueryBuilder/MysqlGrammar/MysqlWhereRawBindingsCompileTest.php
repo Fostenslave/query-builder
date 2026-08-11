@@ -68,7 +68,7 @@ class MysqlWhereRawBindingsCompileTest extends TestCase
         );
     }
 
-    public function testWhereRawBindingsCountLessThanPlaceholdersCount()
+    public function testWhereRawBindingsCountLessThanPlaceholdersCount(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage('The number of placeholders and bindings must match placeholders: 1 bindings: 0');

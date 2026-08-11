@@ -44,6 +44,11 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
+    /**
+     * @param string $sql
+     * @phpstan-param array<mixed> $bindings
+     * @return $this
+     */
     public function whereRaw(string $sql, array $bindings = []): self
     {
 
@@ -51,37 +56,62 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
+    /**
+     * @param string $sql
+     * @param array<mixed> $bindings
+     * @return $this
+     */
     public function orWhereRaw(string $sql, array $bindings = []): self
     {
         $this->wheres[] = new RawClause($sql, $bindings, $this->prefix, BooleanOperator::OR);
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return $this
+     */
     public function whereIn(string $column, array $values): self
     {
         $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::AND);
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return $this
+     */
     public function whereNotIn(string $column, array $values): self
     {
         $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::AND);
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return $this
+     */
     public function orWhereIn(string $column, array $values): self
     {
         $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
         return $this;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return $this
+     */
     public function orWhereNotIn(string $column, array $values): self
     {
         $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
         return $this;
     }
 
-    public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
+    public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
         $resultConditions = '';
         $bindings = [];

@@ -9,6 +9,12 @@ use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final readonly class RawClause implements CompilableLogic
 {
+    /**
+     * @param string $rawClause
+     * @param array<mixed> $bindings
+     * @param string $prefix
+     * @param BooleanOperator $boolean
+     */
     public function __construct(
         private(set) string $rawClause,
         private(set) array  $bindings = [],

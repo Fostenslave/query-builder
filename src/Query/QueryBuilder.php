@@ -106,6 +106,11 @@ class QueryBuilder implements QueryBuilderContract
         return $this->where($column, '=', $value);
     }
 
+    /**
+     * @param string $sql
+     * @param array<mixed> $bindings
+     * @return static
+     */
     public function whereRaw(string $sql, array $bindings = []): static
     {
         $builder = clone $this;
@@ -126,6 +131,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $sql
+     * @param array<mixed> $bindings
+     * @return static
+     */
     public function orWhereRaw(string $sql, array $bindings = []): static
     {
         $builder = clone $this;
@@ -133,6 +143,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return static
+     */
     public function whereIn(string $column, array $values): static
     {
         $builder = clone $this;
@@ -140,6 +155,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return static
+     */
     public function whereNotIn(string $column, array $values): static
     {
         $builder = clone $this;
@@ -147,6 +167,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return static
+     */
     public function orWhereIn(string $column, array $values): static
     {
         $builder = clone $this;
@@ -154,6 +179,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $column
+     * @param array<mixed> $values
+     * @return static
+     */
     public function orWhereNotIn(string $column, array $values): static
     {
         $builder = clone $this;
@@ -331,6 +361,11 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    /**
+     * @param string $sql
+     * @param array<mixed> $bindings
+     * @return static
+     */
     public function havingRaw(string $sql, array $bindings = []): static
     {
         $builder = clone $this;
@@ -358,7 +393,7 @@ class QueryBuilder implements QueryBuilderContract
         return $this->getAggregatedValue($column, 'max');
     }
 
-    private function getAggregatedValue(string $column, string $functionName)
+    private function getAggregatedValue(string $column, string $functionName): mixed
     {
         $this->throwExceptionIfExecutorNotExists();
         $builder = clone($this, [

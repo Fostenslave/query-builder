@@ -18,6 +18,7 @@ final class ConditionGroup implements CompilableLogic
     /**
      * @param callable(ConditionGroupBuilder): CompiledQuery $function
      * @param BooleanOperator $boolean
+     * @param string $prefix
      */
     public function __construct(callable $function, BooleanOperator $boolean = BooleanOperator::AND, string $prefix = 'where') {
         $this->boolean = $boolean;
@@ -25,7 +26,7 @@ final class ConditionGroup implements CompilableLogic
         $function($this->group);
     }
 
-    public function compile(Grammar $grammar, $sqlIndex = 0): CompiledQuery
+    public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
         return $this->group->compile($grammar, $sqlIndex);
     }

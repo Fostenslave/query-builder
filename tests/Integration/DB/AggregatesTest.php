@@ -161,10 +161,12 @@ class AggregatesTest extends TestCase
         $this->assertEquals(3, (int) $rows[2]['user_id']);
 
         foreach ($rows as $row) {
-            $this->logicalAnd(
-                $this->assertGreaterThanOrEqual($lowerBound, $row['total']),
-                $this->assertLessThanOrEqual($higherBound, $row['total']),
-        );
+            $total = $row['total'];
+            $this->assertTrue(
+                $total >= $lowerBound && $row['total'] <= $higherBound,
+                "Sum should be between $lowerBound and $higherBound, $total given"
+            );
+
         }
     }
 

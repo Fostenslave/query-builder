@@ -34,6 +34,9 @@ readonly class PDOQueryExecutor implements QueryExecutor
         return $this->pdo->lastInsertId();
     }
 
+    /**
+     * @param array<string, mixed> $bindings
+     */
     private function bindAndExecute(\PDOStatement $stmt, array $bindings): \PDOStatement
     {
         foreach ($bindings as $key => $value) {
