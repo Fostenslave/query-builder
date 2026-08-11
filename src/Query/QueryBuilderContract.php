@@ -22,6 +22,16 @@ interface QueryBuilderContract
      */
     public function selectSub(QueryBuilderContract $builder, string $alias): static;
 
+
+    /**
+     * Позволяет сделать select из подзапроса
+     * @param QueryBuilderContract $builder
+     * @param string $alias
+     * @return static
+     */
+    public function fromSub(QueryBuilderContract $builder, string $alias): static;
+
+
     /**
      * Добавляет INNER JOIN.
      *

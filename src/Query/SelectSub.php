@@ -14,7 +14,9 @@ final readonly class SelectSub implements Compilable
         private(set) string $alias,
         private(set) int $currentSubIndex = 0,
     ) {
-
+        if (empty($this->alias)) {
+            throw new \InvalidArgumentException('Alias argument should be non empty');
+        }
     }
 
     public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
