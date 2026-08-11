@@ -7,7 +7,6 @@ namespace Fostenslave\QueryBuilder\Grammar;
 use Fostenslave\QueryBuilder\Query\Compilable;
 use Fostenslave\QueryBuilder\Query\CompilableLogic;
 use Fostenslave\QueryBuilder\Query\CompiledQuery;
-use Fostenslave\QueryBuilder\Query\Expression;
 
 abstract class BaseGrammar implements Grammar
 {
@@ -24,7 +23,8 @@ abstract class BaseGrammar implements Grammar
         ?int $offset,
     ): CompiledQuery {
 
-        $sql = "SELECT " . $this->compileSelects($columns) ." FROM " . $this->wrapTable($table);
+        $compiledSelects = $this->compileSelects($columns);
+        $sql = "SELECT " . $compiledSelects->sql ." FROM " . $this->wrapTable($table);
         $compiledWheres = $this->compileWheres($wheres);
         $compiledHavings = $this->compileHavings($havings);
         $sql .= $this->compileJoins($joins)->sql;
@@ -33,7 +33,11 @@ abstract class BaseGrammar implements Grammar
         $sql .= $compiledHavings->sql;
         $sql .= $this->compileOrderBys($orderBys)->sql;
 
-        $bindings = array_merge_recursive($compiledWheres->bindings, $compiledHavings->bindings);
+        $bindings = array_merge_recursive(
+            $compiledSelects->bindings,
+            $compiledWheres->bindings,
+            $compiledHavings->bindings
+        );
 
         if (isset($limit) && $limit >= 0) {
             $sql .= " LIMIT $limit";
@@ -49,12 +53,22 @@ abstract class BaseGrammar implements Grammar
     /**
      * @param array<Compilable> $columns
      */
-    public function compileSelects(array $columns): string
+    protected function compileSelects(array $columns): CompiledQuery
     {
-        $compiledColumns = array_map(fn($column) =>  $column->compile($this)->sql, $columns);
+        $compiledColumns = [];
+        $bindings = [];
+
+        foreach ($columns as $column) {
+            $compiled = $column->compile($this);
+            $compiledColumns[] = $compiled->sql;
+            $bindings = array_merge_recursive($bindings, $compiled->bindings);
+        }
+
         $compiledColumns = array_unique($compiledColumns);
-        return count($compiledColumns) > 0 ? implode(', ',$compiledColumns
-        ) : '*';
+        return count($compiledColumns) > 0 ?
+            new CompiledQuery(implode(', ',$compiledColumns
+        ), $bindings) :
+            new CompiledQuery('*');
     }
 
     /**

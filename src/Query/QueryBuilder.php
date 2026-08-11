@@ -12,7 +12,7 @@ class QueryBuilder implements QueryBuilderContract
 {
 
     /**
-     * @var array<Expression>
+     * @var array<Expression|SelectSub>
      */
     private(set) array $columns = [];
 
@@ -77,6 +77,15 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+
+
+    public function selectSub(QueryBuilderContract $builder, string $alias): static
+    {
+        $newBuilder = clone $this;
+        $subQueriesCount = count(array_filter($newBuilder->columns, fn ($column) => $column instanceof SelectSub));
+        $newBuilder->columns[] = new SelectSub($builder, $alias, $subQueriesCount);
+        return $newBuilder;
+    }
 
     public function where(callable|string $column, string $operator = '', mixed $value = null): static
     {
@@ -410,6 +419,5 @@ class QueryBuilder implements QueryBuilderContract
         $prefixCount = count($this->wheres);
         return "where_$prefixCount";
     }
-
 
 }

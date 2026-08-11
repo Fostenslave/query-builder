@@ -15,6 +15,14 @@ interface QueryBuilderContract
     public function select(string ...$columns): static;
 
     /**
+     * Добавляет подзапрос в качестве select
+     * @param QueryBuilderContract $builder
+     * @param string $alias
+     * @return static
+     */
+    public function selectSub(QueryBuilderContract $builder, string $alias): static;
+
+    /**
      * Добавляет INNER JOIN.
      *
      * @param string $table    Присоединяемая таблица ('posts').

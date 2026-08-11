@@ -9,6 +9,7 @@ use Fostenslave\QueryBuilder\Query\JoinClause;
 use Fostenslave\QueryBuilder\Query\OrderByClause;
 use Fostenslave\QueryBuilder\Query\RawClause;
 use Fostenslave\QueryBuilder\Query\Expression;
+use Fostenslave\QueryBuilder\Query\SelectSub;
 use Fostenslave\QueryBuilder\Query\WhereClause;
 
 /**
@@ -19,7 +20,7 @@ interface Grammar
 {
     /**
      * @param string $table
-     * @param array<Expression>  $columns
+     * @param array<Expression|SelectSub>  $columns
      * @param array<JoinClause> $joins
      * @param array<WhereClause|RawClause> $wheres
      * @param array<OrderByClause> $orderBys
