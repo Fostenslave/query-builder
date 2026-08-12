@@ -15,11 +15,10 @@ use Throwable;
 class DB
 {
     public function __construct(
-        private readonly PDO     $pdo,
-        private readonly Grammar  $grammar = new SqliteGrammar(),
-        private ?QueryExecutor    $executor = null,
-    )
-    {
+        private readonly PDO $pdo,
+        private readonly Grammar $grammar = new SqliteGrammar(),
+        private ?QueryExecutor $executor = null,
+    ) {
         if ($this->executor === null) {
             $this->executor = new PDOQueryExecutor($this->pdo);
         }

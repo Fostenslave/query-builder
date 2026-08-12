@@ -10,7 +10,6 @@ use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 use Fostenslave\QueryBuilder\Query\Expression;
 
-
 class QueryBuilderTest extends TestCase
 {
     private Grammar $grammar;
@@ -34,7 +33,7 @@ class QueryBuilderTest extends TestCase
         $qb = new QueryBuilder($this->grammar, 'users');
         $this->assertEquals('users', $qb->table);
         $qb = $qb
-            ->where('name', '=' , 'John Doe')
+            ->where('name', '=', 'John Doe')
             ->where('age', '>', 20)
             ->whereEquals('email', 'test@domain.com');
 
@@ -101,7 +100,7 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals('users', $qb->table);
         $qb = $qb->select('column1', 'column2', 'column3')
             ->selectRaw('lower(column2)')
-            ->where('name', '=' , 'John Doe')
+            ->where('name', '=', 'John Doe')
             ->where('age', '>', 20)
             ->whereEquals('email', 'test@domain.com')
             ->orderBy('age', 'DESC')
@@ -131,5 +130,4 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals('number', $qb->orderBys[1]->column);
         $this->assertEquals('ASC', $qb->orderBys[1]->direction);
     }
-
 }

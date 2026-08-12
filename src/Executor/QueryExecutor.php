@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fostenslave\QueryBuilder\Executor;
 
-
 use Fostenslave\QueryBuilder\Query\CompiledQuery;
 
 /**

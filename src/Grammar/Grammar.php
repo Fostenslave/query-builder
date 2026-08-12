@@ -33,16 +33,16 @@ interface Grammar
      * @return CompiledQuery
      */
     public function compileSelect(
-        string|null   $table,
+        string|null $table,
         SubQuery|null $fromSub,
-        array         $columns,
-        array         $joins,
-        array         $wheres,
-        array         $orderBys,
-        array         $groupBys,
-        array         $havings,
-        ?int          $limit,
-        ?int          $offset,
+        array $columns,
+        array $joins,
+        array $wheres,
+        array $orderBys,
+        array $groupBys,
+        array $havings,
+        ?int $limit,
+        ?int $offset,
     ): CompiledQuery;
 
     /**

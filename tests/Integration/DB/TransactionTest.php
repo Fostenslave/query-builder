@@ -147,7 +147,7 @@ class TransactionTest extends TestCase
 
         $this->expectExceptionMessage('transfer failed');
 
-        $this->db->transaction(function (DB $db) use ($aliceId){
+        $this->db->transaction(function (DB $db) use ($aliceId) {
             $db->table('users')->where('id', '=', $aliceId)->update(['balance' => 350]);
             throw new Exception('transfer failed');
         });

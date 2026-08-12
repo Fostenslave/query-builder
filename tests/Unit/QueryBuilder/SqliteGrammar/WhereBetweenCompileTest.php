@@ -92,7 +92,7 @@ class WhereBetweenCompileTest extends TestCase
     public function testWhereBetweenInGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->whereBetween('age', 18, 65);
             })
             ->compile();
@@ -110,7 +110,7 @@ class WhereBetweenCompileTest extends TestCase
     public function testTwoWhereBetweenInSameGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->whereBetween('a', 1, 10)
                   ->whereBetween('b', 20, 30);
             })

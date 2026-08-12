@@ -166,7 +166,6 @@ class AggregatesTest extends TestCase
                 $total >= $lowerBound && $row['total'] <= $higherBound,
                 "Sum should be between $lowerBound and $higherBound, $total given"
             );
-
         }
     }
 

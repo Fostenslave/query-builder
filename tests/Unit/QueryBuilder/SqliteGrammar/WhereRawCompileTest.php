@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
-
 class WhereRawCompileTest extends TestCase
 {
     private SqliteGrammar $grammar;

@@ -6,7 +6,6 @@ namespace Fostenslave\QueryBuilder\Grammar;
 
 class MysqlGrammar extends BaseGrammar implements Grammar
 {
-
     protected function wrapValue(string $value): string
     {
         if ($value === '*') {

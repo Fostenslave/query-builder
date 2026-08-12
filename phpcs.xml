@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="Query builder"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>PHP code style for checking PSR-12 coding standard</description>
+
+    <file>src</file>
+    <file>tests</file>
+
+    <exclude-pattern>vendor</exclude-pattern>
+
+    <rule ref="PSR12"/>
+</ruleset>

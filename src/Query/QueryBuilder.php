@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Fostenslave\QueryBuilder\Query;
@@ -10,7 +11,6 @@ use RuntimeException;
 
 class QueryBuilder implements QueryBuilderContract
 {
-
     /**
      * @var array<Expression|SubQuery>
      */
@@ -47,11 +47,10 @@ class QueryBuilder implements QueryBuilderContract
     private(set) SubQuery|null $fromSub = null;
 
     public function __construct(
-        private(set) readonly Grammar   $grammar,
-        private(set) readonly string|null    $table = null,
+        private(set) readonly Grammar $grammar,
+        private(set) readonly string|null $table = null,
         private readonly ?QueryExecutor $executor = null,
-    )
-    {
+    ) {
     }
 
     public function from(string $tableName): static
@@ -76,7 +75,7 @@ class QueryBuilder implements QueryBuilderContract
         foreach ($columns as $column) {
             $builder->columns[] = new Expression($column);
         }
-        
+
         return $builder;
     }
 
@@ -211,6 +210,34 @@ class QueryBuilder implements QueryBuilderContract
         return $builder;
     }
 
+    public function whereBetween(string $column, mixed $from, mixed $to): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false);
+        return $builder;
+    }
+
+    public function whereNotBetween(string $column, mixed $from, mixed $to): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true);
+        return $builder;
+    }
+
+    public function orWhereBetween(string $column, mixed $from, mixed $to): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        return $builder;
+    }
+
+    public function orWhereNotBetween(string $column, mixed $from, mixed $to): static
+    {
+        $builder = clone $this;
+        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        return $builder;
+    }
+
 
     public function orderBy(string $column, string $direction = 'ASC'): static
     {
@@ -303,7 +330,6 @@ class QueryBuilder implements QueryBuilderContract
     public function compileDelete(): CompiledQuery
     {
         return $this->grammar->compileDelete($this->table, $this->wheres);
-
     }
 
     public function insert(array $values): int

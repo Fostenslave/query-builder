@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Fostenslave\QueryBuilder\Query;
 
-
 interface QueryBuilderContract
 {
     /**
@@ -219,6 +218,28 @@ interface QueryBuilderContract
      * @param array<int, mixed>  $values Массив значений.
      */
     public function orWhereNotIn(string $column, array $values): static;
+
+    /**
+     * Добавляет условие WHERE column IN (values) (через AND).
+     *
+     * @param string $column Имя колонки.
+     */
+    public function whereBetween(string $column, mixed $from, mixed $to): static;
+
+    /**
+     * Добавляет условие WHERE column BETWEEN (val1, val2) через AND.
+     */
+    public function whereNotBetween(string $column, mixed $from, mixed $to): static;
+
+    /**
+     * Добавляет условие WHERE column BETWEEN (val1, val2) через OR.
+     */
+    public function orWhereBetween(string $column, mixed $from, mixed $to): static;
+
+    /**
+     * Добавляет условие WHERE column NOT BETWEEN (val1, val2) через OR.
+     */
+    public function orWhereNotBetween(string $column, mixed $from, mixed $to): static;
 
     /**
      * Возвращает количество строк запроса (SELECT COUNT(*)).

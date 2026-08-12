@@ -8,7 +8,6 @@ use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final class ConditionGroupBuilder implements CompilableLogic
 {
-
     /**
      * @var array<CompilableLogic> $wheres
      */
@@ -40,7 +39,7 @@ final class ConditionGroupBuilder implements CompilableLogic
             return $this;
         }
 
-        $this->wheres[] = new WhereClause($column, $operator, $value,  $this->prefix, BooleanOperator::OR);
+        $this->wheres[] = new WhereClause($column, $operator, $value, $this->prefix, BooleanOperator::OR);
         return $this;
     }
 
@@ -111,6 +110,30 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
+    public function whereBetween(string $column, mixed $from, mixed $to): self
+    {
+        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false);
+        return $this;
+    }
+
+    public function whereNotBetween(string $column, mixed $from, mixed $to): self
+    {
+        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true);
+        return $this;
+    }
+
+    public function orWhereBetween(string $column, mixed $from, mixed $to): self
+    {
+        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        return $this;
+    }
+
+    public function orWhereNotBetween(string $column, mixed $from, mixed $to): self
+    {
+        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        return $this;
+    }
+
     public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
         $resultConditions = '';
@@ -132,7 +155,7 @@ final class ConditionGroupBuilder implements CompilableLogic
 
     public function getBoolean(): BooleanOperator
     {
-       return $this->boolean;
+        return $this->boolean;
     }
 
     private function getWherePrefix(): string

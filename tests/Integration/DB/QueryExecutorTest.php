@@ -11,7 +11,6 @@ use Fostenslave\QueryBuilder\Query\QueryBuilder;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
-
 class QueryExecutorTest extends TestCase
 {
     private PDO $pdo;

@@ -22,7 +22,8 @@ final readonly class WhereInClause implements CompilableLogic
     /**
      * @param array<int, mixed> $values
      */
-    public function __construct(string $column, array $values, string $prefix = 'where', bool $not = false, BooleanOperator $boolean = BooleanOperator::AND) {
+    public function __construct(string $column, array $values, string $prefix = 'where', bool $not = false, BooleanOperator $boolean = BooleanOperator::AND)
+    {
         $this->column = $column;
         if (trim($column) === '') {
             throw new DomainException('You cannot set empty column');
@@ -58,6 +59,6 @@ final readonly class WhereInClause implements CompilableLogic
 
     public function getBoolean(): BooleanOperator
     {
-       return $this->boolean;
+        return $this->boolean;
     }
 }

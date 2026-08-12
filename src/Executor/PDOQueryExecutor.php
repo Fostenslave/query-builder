@@ -3,19 +3,24 @@
 declare(strict_types=1);
 
 namespace Fostenslave\QueryBuilder\Executor;
+
 use Fostenslave\QueryBuilder\Query\CompiledQuery;
 
 readonly class PDOQueryExecutor implements QueryExecutor
 {
-    public function __construct(private \PDO $pdo) {}
+    public function __construct(private \PDO $pdo)
+    {
+    }
 
-    public function fetchAll(CompiledQuery $query): array {
+    public function fetchAll(CompiledQuery $query): array
+    {
         $stmt = $this->pdo->prepare($query->sql);
         $stmt = $this->bindAndExecute($stmt, $query->bindings);
         return $stmt->fetchAll();
     }
 
-    public function fetch(CompiledQuery $query): ?array {
+    public function fetch(CompiledQuery $query): ?array
+    {
         $stmt = $this->pdo->prepare($query->sql);
         $stmt = $this->bindAndExecute($stmt, $query->bindings);
         $result = $stmt->fetch();
@@ -53,6 +58,4 @@ readonly class PDOQueryExecutor implements QueryExecutor
 
         return $stmt;
     }
-
-
 }

@@ -6,7 +6,6 @@ namespace Fostenslave\QueryBuilder\Query;
 
 final readonly class CompiledQuery
 {
-
     /**
      * @param string $sql
      * @param array<string, mixed> $bindings
@@ -14,5 +13,6 @@ final readonly class CompiledQuery
     public function __construct(
         private(set) string $sql,
         private(set) array $bindings = [],
-    ) {}
+    ) {
+    }
 }

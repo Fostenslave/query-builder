@@ -74,8 +74,7 @@ class CountExistsRawQueriesTest extends TestCase
         $this->assertTrue($this->db->table('users')
             ->select('id')
             ->where('id', '=', 1)
-            ->exists()
-        );
+            ->exists());
     }
 
     public function testExistsReturnsFalseWhenNoRows(): void

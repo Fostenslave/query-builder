@@ -17,7 +17,7 @@ final readonly class RawClause implements CompilableLogic
      */
     public function __construct(
         private(set) string $rawClause,
-        private(set) array  $bindings = [],
+        private(set) array $bindings = [],
         private(set) string $prefix = 'raw',
         private(set) BooleanOperator $boolean = BooleanOperator::AND
     ) {

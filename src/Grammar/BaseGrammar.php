@@ -11,18 +11,17 @@ use Fostenslave\QueryBuilder\Query\SubQuery;
 
 abstract class BaseGrammar implements Grammar
 {
-
     public function compileSelect(
-        string|null   $table,
+        string|null $table,
         SubQuery|null $fromSub,
-        array         $columns,
-        array         $joins,
-        array         $wheres,
-        array         $orderBys,
-        array         $groupBys,
-        array         $havings,
-        ?int          $limit,
-        ?int          $offset,
+        array $columns,
+        array $joins,
+        array $wheres,
+        array $orderBys,
+        array $groupBys,
+        array $havings,
+        ?int $limit,
+        ?int $offset,
     ): CompiledQuery {
 
         $compiledSelects = $this->compileSelects($columns);
@@ -39,7 +38,7 @@ abstract class BaseGrammar implements Grammar
             $tableQuery = $compiledFromSub->sql;
         }
 
-        $sql = "SELECT " . $compiledSelects->sql ." FROM " . $tableQuery;
+        $sql = "SELECT " . $compiledSelects->sql . " FROM " . $tableQuery;
         $compiledWheres = $this->compileWheres($wheres);
         $compiledHavings = $this->compileHavings($havings);
         $sql .= $this->compileJoins($joins)->sql;
@@ -82,8 +81,7 @@ abstract class BaseGrammar implements Grammar
 
         $compiledColumns = array_unique($compiledColumns);
         return count($compiledColumns) > 0 ?
-            new CompiledQuery(implode(', ',$compiledColumns
-        ), $bindings) :
+            new CompiledQuery(implode(', ', $compiledColumns), $bindings) :
             new CompiledQuery('*');
     }
 
@@ -99,9 +97,9 @@ abstract class BaseGrammar implements Grammar
         $counter = 0;
         $columns = $this->wrapIdentifiers(array_keys($values));
         $columnsString = '(' . implode(', ', $columns) . ')';
-        foreach ($values as  $value) {
+        foreach ($values as $value) {
             $bindings[":val_$counter"] = $value;
-            $counter+=1;
+            $counter += 1;
         }
 
         $valuesString = '(' . implode(', ', array_keys($bindings)) . ')';
@@ -120,12 +118,12 @@ abstract class BaseGrammar implements Grammar
         $counter = 0;
 
         $preparedValueStrings = [];
-        foreach ($values as  $column => $value) {
+        foreach ($values as $column => $value) {
             $bindingKey = ":set_$counter";
             $bindings[$bindingKey] = $value;
             $preparedColumn = $this->wrapTable($column);
             $preparedValueStrings[] = "$preparedColumn = $bindingKey";
-            $counter+=1;
+            $counter += 1;
         }
 
         $valuesString = implode(', ', $preparedValueStrings);
@@ -205,7 +203,7 @@ abstract class BaseGrammar implements Grammar
         }
 
         return new CompiledQuery(
-             ' ' . implode(' ', $joinSqlStrings),
+            ' ' . implode(' ', $joinSqlStrings),
             []
         );
     }
@@ -213,7 +211,8 @@ abstract class BaseGrammar implements Grammar
     /**
      * @param array<CompilableLogic> $wheres
      */
-    private function compileWheres(array $wheres): CompiledQuery {
+    private function compileWheres(array $wheres): CompiledQuery
+    {
         if (count($wheres) === 0) {
             return new CompiledQuery('', []);
         }
@@ -241,21 +240,26 @@ abstract class BaseGrammar implements Grammar
     /**
      * @param array<Compilable> $groupBys
      */
-    private function compileGroupBys(array $groupBys): CompiledQuery {
+    private function compileGroupBys(array $groupBys): CompiledQuery
+    {
         if (count($groupBys) === 0) {
             return new CompiledQuery('', []);
         }
 
 
         return new CompiledQuery(
-            ' GROUP BY ' . implode(', ', array_map(fn (Compilable $groupBy) => $groupBy->compile($this, 0)->sql, $groupBys)
-        ));
+            ' GROUP BY ' . implode(
+                ', ',
+                array_map(fn (Compilable $groupBy) => $groupBy->compile($this, 0)->sql, $groupBys)
+            )
+        );
     }
 
     /**
      * @param array<Compilable> $havings
      */
-    private function compileHavings(array $havings): CompiledQuery {
+    private function compileHavings(array $havings): CompiledQuery
+    {
         if (count($havings) === 0) {
             return new CompiledQuery('', []);
         }

@@ -10,7 +10,6 @@ use Fostenslave\QueryBuilder\Grammar\Grammar;
 use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
-
 class QueryBuilderCompileTest extends TestCase
 {
     private Grammar $grammar;

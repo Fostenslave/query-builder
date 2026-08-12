@@ -10,10 +10,8 @@ use Fostenslave\QueryBuilder\Query\OrderByClause;
 use Fostenslave\QueryBuilder\Query\RawClause;
 use Fostenslave\QueryBuilder\Query\WhereClause;
 
-
 class SqliteGrammar extends BaseGrammar implements Grammar
 {
-
     protected function wrapValue(string $value): string
     {
         if ($value === '*') {

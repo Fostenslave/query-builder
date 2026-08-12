@@ -81,5 +81,4 @@ class OrWhereCompileTest extends TestCase
             $compiled->sql,
         );
     }
-
 }

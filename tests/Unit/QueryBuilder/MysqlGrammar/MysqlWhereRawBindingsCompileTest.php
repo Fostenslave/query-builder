@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Grammar\MysqlGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
-
 class MysqlWhereRawBindingsCompileTest extends TestCase
 {
     private MysqlGrammar $grammar;
@@ -92,5 +91,4 @@ class MysqlWhereRawBindingsCompileTest extends TestCase
             ->whereRaw('age > 15', [3, 'Alice', 15])
             ->compile();
     }
-
 }

@@ -11,7 +11,6 @@ use Fostenslave\QueryBuilder\Query\JoinClause;
 use Fostenslave\QueryBuilder\Query\Expression;
 use Fostenslave\QueryBuilder\Query\WhereClause;
 
-
 class MysqlGrammarCompileTest extends TestCase
 {
     private MysqlGrammar $grammar;

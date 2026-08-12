@@ -32,6 +32,10 @@ test: ## Run PHPUnit tests. Usage: make test ARGS="--filter FooTest"
 	docker compose run --rm query-builder-php-cli vendor/bin/phpunit $(ARGS)
 phpstan: ## Run phpstan static code analyzer
 	docker compose run --rm query-builder-php-cli vendor/bin/phpstan analyse --memory-limit=1G
+phpcs: ## Run phpcs code style checks for PSR-12 standard
+	docker compose run --rm query-builder-php-cli vendor/bin/phpcs
+phpcbf: ## Run phpcbf for automatic code formatting
+	docker compose run --rm query-builder-php-cli vendor/bin/phpcbf
 check-q: phpstan test ## Runs tests and code analyzers
 
 php: ## Run PHP inside container. Usage: make php ARGS="-r 'echo 1;'"

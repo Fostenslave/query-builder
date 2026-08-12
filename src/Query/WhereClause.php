@@ -16,14 +16,15 @@ final readonly class WhereClause implements CompilableLogic
 
     private(set) mixed $value;
     private(set) BooleanOperator $boolean;
-    public function __construct(string $column, string|int $operator, mixed $value, string $prefix = 'where', BooleanOperator $boolean = BooleanOperator::AND) {
+    public function __construct(string $column, string|int $operator, mixed $value, string $prefix = 'where', BooleanOperator $boolean = BooleanOperator::AND)
+    {
         $this->column = $column;
         if (trim($column) === '') {
             throw new DomainException('You cannot set empty column');
         }
 
         if (!$this->isOperator($operator)) {
-            $allowedOperators = implode(', ',self::ALLOWED_OPERATORS);
+            $allowedOperators = implode(', ', self::ALLOWED_OPERATORS);
             throw new DomainException("Operator must be one of values $allowedOperators");
         }
 
@@ -59,6 +60,6 @@ final readonly class WhereClause implements CompilableLogic
 
     public function getBoolean(): BooleanOperator
     {
-       return $this->boolean;
+        return $this->boolean;
     }
 }

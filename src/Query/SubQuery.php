@@ -8,7 +8,6 @@ use Fostenslave\QueryBuilder\Grammar\Grammar;
 
 final readonly class SubQuery implements Compilable
 {
-
     public function __construct(
         private(set) QueryBuilderContract $builder,
         private(set) string $alias,

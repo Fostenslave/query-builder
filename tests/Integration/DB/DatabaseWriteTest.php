@@ -8,7 +8,6 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Database\DB;
 
-
 class DatabaseWriteTest extends TestCase
 {
     private DB $db;

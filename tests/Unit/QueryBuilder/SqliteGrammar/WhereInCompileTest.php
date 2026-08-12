@@ -145,7 +145,7 @@ class WhereInCompileTest extends TestCase
     public function testWhereInInsideGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->whereIn('role', ['admin', 'moderator']);
             })
             ->compile();
@@ -163,7 +163,7 @@ class WhereInCompileTest extends TestCase
     public function testWhereInInsideGroupWithTopLevel(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->whereIn('role', ['admin', 'moderator']);
             })
             ->where('active', '=', 1)
@@ -182,9 +182,9 @@ class WhereInCompileTest extends TestCase
     public function testWhereInInsideNestedGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->where('active', '=', 1)
-                  ->where(function($h) {
+                  ->where(function ($h) {
                       $h->whereIn('role', ['admin', 'moderator']);
                   });
             })
@@ -263,7 +263,7 @@ class WhereInCompileTest extends TestCase
     public function testTwoWhereInSameGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->whereIn('a', [1, 2])
                   ->whereIn('b', [3, 4]);
             })

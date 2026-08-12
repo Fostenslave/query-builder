@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Fostenslave\QueryBuilder\Grammar\SqliteGrammar;
 use Fostenslave\QueryBuilder\Query\QueryBuilder;
 
-
 class QueryBuilderIntegrationTest extends TestCase
 {
     private PDO $pdo;

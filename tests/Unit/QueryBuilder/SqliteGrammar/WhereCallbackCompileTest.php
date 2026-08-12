@@ -28,15 +28,15 @@ class WhereCallbackCompileTest extends TestCase
     {
         $compiled = $this->builder()
             ->where('status', '=', 'enabled')
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('role', '=', 'admin')
                   ->orWhere('role', '=', 'moderator');
             })
-            ->orWhere(function(ConditionGroupBuilder $g) {
+            ->orWhere(function (ConditionGroupBuilder $g) {
                 $g->where('name', '=', 'administrator')
                     ->orWhere('name', '=', 'moderator652');
             })
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('id', '>', 1)
                     ->where('id', '<', 100);
             })
@@ -65,7 +65,7 @@ class WhereCallbackCompileTest extends TestCase
     {
         $compiled = $this->builder()
             ->where('active', '=', 1)
-            ->orWhere(function(ConditionGroupBuilder $g) {
+            ->orWhere(function (ConditionGroupBuilder $g) {
                 $g->where('role', '=', 'admin')
                   ->where('banned', '=', 0);
             })
@@ -84,7 +84,7 @@ class WhereCallbackCompileTest extends TestCase
     public function testWhereRawInsideGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->whereRaw('age > ?', [18])
                   ->orWhereRaw('name = ?', ['Alice']);
             })
@@ -103,7 +103,7 @@ class WhereCallbackCompileTest extends TestCase
     public function testMixedBindingsInsideGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('active', '=', 1)
                   ->whereRaw('age > ?', [18]);
             })
@@ -122,9 +122,9 @@ class WhereCallbackCompileTest extends TestCase
     public function testNestedGroups(): void
     {
         $compiled = $this->builder()
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('active', '=', 1)
-                  ->where(function(ConditionGroupBuilder $h) {
+                  ->where(function (ConditionGroupBuilder $h) {
                       $h->where('role', '=', 'admin')
                         ->orWhere('role', '=', 'moderator');
                   });
@@ -145,7 +145,7 @@ class WhereCallbackCompileTest extends TestCase
     {
         $compiled = $this->builder()
             ->where('x', '=', 1)
-            ->where(function(ConditionGroupBuilder $g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('y', '=', 2);
             })
             ->where('z', '=', 3)
@@ -161,7 +161,7 @@ class WhereCallbackCompileTest extends TestCase
     public function testUpdateWithGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function($g) {
+            ->where(function ($g) {
                 $g->where('role', '=', 'admin')
                   ->orWhere('role', '=', 'moderator');
             })
@@ -177,7 +177,7 @@ class WhereCallbackCompileTest extends TestCase
     {
         $compiled = $this->builder()
             ->where('expired', '=', 1)
-            ->orWhere(function($g) {
+            ->orWhere(function ($g) {
                 $g->where('role', '=', 'banned')
                   ->where('active', '=', 0);
             })

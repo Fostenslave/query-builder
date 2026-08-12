@@ -10,7 +10,7 @@ final readonly class Expression implements Compilable
 {
     public function __construct(
         private(set) string $expression,
-        private(set) bool   $isRaw = false,
+        private(set) bool $isRaw = false,
     ) {
     }
 
