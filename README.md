@@ -4,6 +4,9 @@ Immutable, PDO SQL query builder with compile-time dialect support.
 
 - Dialects extensible via `Grammar` interface
 - Built-in SQLITE, MySql grammars
+- WHERE IN / WHERE NOT IN / WHERE BETWEEN / WHERE NOT BETWEEN
+- Subqueries in SELECT (`selectSub`) and FROM (`fromSub`)
+- Nested condition groups via `where(callable)`
 - Raw SQL with parameterised bindings
 - PDO prepared statements with typed bindings
 - Transactions via callback or manual begin/commit/rollBack
@@ -60,6 +63,68 @@ $id = $db->table('users')->insert(['name' => 'Alice', 'age' => 30]);
 $affected = $db->table('users')->where('id', '=', 1)->update(['name' => 'Bob']);
 
 $affected = $db->table('users')->where('id', '=', 1)->delete();
+```
+
+### WHERE IN / WHERE BETWEEN
+
+```php
+$db->table('users')
+    ->whereIn('role', ['admin', 'moderator'])
+    ->get();
+
+$db->table('users')
+    ->whereNotIn('status', ['deleted', 'banned'])
+    ->get();
+
+$db->table('users')
+    ->whereBetween('age', 18, 65)
+    ->get();
+
+$db->table('users')
+    ->whereNotBetween('score', 0, 50)
+    ->orWhereBetween('score', 80, 100)
+    ->get();
+```
+
+### Nested condition groups (where callback)
+
+```php
+$db->table('users')
+    ->where('active', '=', 1)
+    ->where(function ($g) {
+        $g->where('role', '=', 'admin')
+          ->orWhere('role', '=', 'moderator');
+    })
+    ->get();
+// SELECT * FROM "users"
+//   WHERE "active" = 1 AND ("role" = 'admin' OR "role" = 'moderator')
+```
+
+### Subqueries (selectSub / fromSub)
+
+```php
+$sub = $db->table('orders')
+    ->selectRaw('COUNT(*)')
+    ->whereRaw('orders.user_id = users.id');
+
+$users = $db->table('users')
+    ->select('name')
+    ->selectSub($sub, 'order_count')
+    ->get();
+// SELECT "name", (SELECT COUNT(*) FROM "orders"
+//   WHERE orders.user_id = users.id) AS "order_count" FROM "users"
+
+$fromSub = $db->table('orders')
+    ->where('total', '>', 100);
+
+$bigOrders = $db->table('users')
+    ->fromSub($fromSub, 'o')
+    ->select('o.user_id', 'o.total')
+    ->orderBy('o.total', 'ASC')
+    ->get();
+// SELECT "o"."user_id", "o"."total"
+//   FROM (SELECT * FROM "orders" WHERE "total" > ?) AS "o"
+//   ORDER BY "o"."total" ASC
 ```
 
 ### GROUP BY / HAVING / Aggregates

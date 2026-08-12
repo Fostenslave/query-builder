@@ -32,6 +32,16 @@ final class ConditionGroupBuilder implements CompilableLogic
         return $this;
     }
 
+    public function whereNull(string $column): self
+    {
+        return $this->where($column, '=', null);
+    }
+
+    public function whereNotNull(string $column): self
+    {
+        return $this->where($column, '!=', null);
+    }
+
     public function orWhere(callable|string $column, string $operator = '', mixed $value = null): self
     {
         if (is_callable($column)) {

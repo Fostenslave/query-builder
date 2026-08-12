@@ -180,6 +180,18 @@ interface QueryBuilderContract
     public function whereRaw(string $sql, array $bindings = []): static;
 
     /**
+     * Добавляет условие WHERE column IS NULL
+     * @param string $column
+     */
+    public function whereNull(string $column): static;
+
+    /**
+     * Добавляет условие WHERE column IS NOT NULL
+     * @param string $column
+     */
+    public function whereNotNull(string $column): static;
+
+    /**
      * Добавляет условие WHERE через OR с сырым SQL-выражением.
      *
      * @param string $sql       Сырой SQL ('role = ?').

@@ -84,8 +84,13 @@ classDiagram
     class Expression
     class JoinClause
     class WhereClause
+    class WhereInClause
+    class WhereBetweenClause
     class RawClause
     class OrderByClause
+    class SelectSub
+    class ConditionGroup
+    class ConditionGroupBuilder
 
     Grammar <|.. BaseGrammar
     BaseGrammar <|-- SqliteGrammar
@@ -98,8 +103,12 @@ classDiagram
     Compilable <|.. Expression
     Compilable <|.. JoinClause
     Compilable <|.. WhereClause
+    Compilable <|.. WhereInClause
+    Compilable <|.. WhereBetweenClause
     Compilable <|.. RawClause
     Compilable <|.. OrderByClause
+    Compilable <|.. SelectSub
+    Compilable <|.. ConditionGroup
 
     DB ..> QueryBuilder : creates
     QueryBuilder --> Grammar : uses

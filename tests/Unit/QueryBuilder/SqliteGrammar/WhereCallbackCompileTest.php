@@ -163,7 +163,7 @@ class WhereCallbackCompileTest extends TestCase
     public function testUpdateWithGroup(): void
     {
         $compiled = $this->builder()
-            ->where(function ($g) {
+            ->where(function (ConditionGroupBuilder $g) {
                 $g->where('role', '=', 'admin')
                   ->orWhere('role', '=', 'moderator');
             })
@@ -179,14 +179,18 @@ class WhereCallbackCompileTest extends TestCase
     {
         $compiled = $this->builder()
             ->where('expired', '=', 1)
-            ->orWhere(function ($g) {
-                $g->where('role', '=', 'banned')
-                  ->where('active', '=', 0);
+            ->orWhere(function (ConditionGroupBuilder $g) {
+                $g
+                    ->where('role', '=', 'banned')
+                    ->where('active', '=', 0)
+                    ->whereNull('deleted_at')
+                    ->whereNotNull('created_at');
             })
             ->compileDelete();
 
         $this->assertSame(
-            'DELETE FROM "users" WHERE "expired" = :where_0 OR ("role" = :where_1_0 AND "active" = :where_1_1)',
+            'DELETE FROM "users" WHERE "expired" = :where_0 OR '
+            . '("role" = :where_1_0 AND "active" = :where_1_1 AND "deleted_at" is null AND "created_at" is not null)',
             $compiled->sql,
         );
     }
