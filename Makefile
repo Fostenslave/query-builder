@@ -36,7 +36,7 @@ phpcs: ## Run phpcs code style checks for PSR-12 standard
 	docker compose run --rm query-builder-php-cli vendor/bin/phpcs
 phpcbf: ## Run phpcbf for automatic code formatting
 	docker compose run --rm query-builder-php-cli vendor/bin/phpcbf
-check-q: phpstan test ## Runs tests and code analyzers
+check-q: phpstan test phpcs ## Runs tests and code analyzers
 
 php: ## Run PHP inside container. Usage: make php ARGS="-r 'echo 1;'"
 	docker compose run --rm query-builder-php-cli php $(ARGS)

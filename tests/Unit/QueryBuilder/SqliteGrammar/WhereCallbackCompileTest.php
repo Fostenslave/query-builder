@@ -43,7 +43,9 @@ class WhereCallbackCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" WHERE "status" = :where_0 AND ("role" = :where_1_0 OR "role" = :where_1_1) OR ("name" = :where_2_0 OR "name" = :where_2_1) AND ("id" > :where_3_0 AND "id" < :where_3_1)',
+            'SELECT * FROM "users" WHERE "status" = :where_0 '
+            . 'AND ("role" = :where_1_0 OR "role" = :where_1_1) '
+            . 'OR ("name" = :where_2_0 OR "name" = :where_2_1) AND ("id" > :where_3_0 AND "id" < :where_3_1)',
             $compiled->sql,
         );
         $this->assertSame(

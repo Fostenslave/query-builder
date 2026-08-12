@@ -170,7 +170,13 @@ class QueryBuilder implements QueryBuilderContract
     public function whereIn(string $column, array $values): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::AND);
+        $builder->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::AND
+        );
         return $builder;
     }
 
@@ -182,7 +188,13 @@ class QueryBuilder implements QueryBuilderContract
     public function whereNotIn(string $column, array $values): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::AND);
+        $builder->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::AND
+        );
         return $builder;
     }
 
@@ -194,7 +206,13 @@ class QueryBuilder implements QueryBuilderContract
     public function orWhereIn(string $column, array $values): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        $builder->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::OR
+        );
         return $builder;
     }
 
@@ -206,35 +224,67 @@ class QueryBuilder implements QueryBuilderContract
     public function orWhereNotIn(string $column, array $values): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        $builder->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::OR
+        );
         return $builder;
     }
 
     public function whereBetween(string $column, mixed $from, mixed $to): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false);
+        $builder->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: false
+        );
         return $builder;
     }
 
     public function whereNotBetween(string $column, mixed $from, mixed $to): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true);
+        $builder->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: true
+        );
         return $builder;
     }
 
     public function orWhereBetween(string $column, mixed $from, mixed $to): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        $builder->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::OR
+        );
         return $builder;
     }
 
     public function orWhereNotBetween(string $column, mixed $from, mixed $to): static
     {
         $builder = clone $this;
-        $builder->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        $builder->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::OR
+        );
         return $builder;
     }
 

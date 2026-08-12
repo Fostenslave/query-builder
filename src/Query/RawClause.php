@@ -39,7 +39,10 @@ final readonly class RawClause implements CompilableLogic
         $bindingsCount = count($this->bindings);
 
         if ($placeholdersCount !== $bindingsCount) {
-            throw new DomainException("The number of placeholders and bindings must match placeholders: $placeholdersCount bindings: $bindingsCount");
+            throw new DomainException(
+                "The number of placeholders and bindings must match "
+                . "placeholders: $placeholdersCount bindings: $bindingsCount"
+            );
         }
 
         if (!count($this->bindings)) {

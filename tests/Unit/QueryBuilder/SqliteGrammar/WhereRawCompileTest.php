@@ -48,7 +48,10 @@ class WhereRawCompileTest extends TestCase
             ->where('name', '=', 'Alice')
             ->compile();
 
-        $this->assertSame('SELECT * FROM "users" WHERE "active" = :where_0 AND age > :raw_1_0 AND "name" = :where_2', $compiled->sql);
+        $this->assertSame(
+            'SELECT * FROM "users" WHERE "active" = :where_0 AND age > :raw_1_0 AND "name" = :where_2',
+            $compiled->sql,
+        );
         $this->assertSame(
             [':where_0' => 1, ':raw_1_0' => 20, ':where_2' => 'Alice'],
             $compiled->bindings,

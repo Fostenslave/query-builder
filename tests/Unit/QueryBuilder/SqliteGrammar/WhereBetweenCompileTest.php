@@ -117,7 +117,8 @@ class WhereBetweenCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" WHERE ("a" BETWEEN :where_0_0_min AND :where_0_0_max AND "b" BETWEEN :where_0_1_min AND :where_0_1_max)',
+            'SELECT * FROM "users" WHERE ("a" BETWEEN :where_0_0_min AND :where_0_0_max '
+            . 'AND "b" BETWEEN :where_0_1_min AND :where_0_1_max)',
             $compiled->sql,
         );
         $this->assertCount(4, $compiled->bindings);

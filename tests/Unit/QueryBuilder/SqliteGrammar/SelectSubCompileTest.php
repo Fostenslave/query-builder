@@ -55,7 +55,8 @@ class SelectSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "total" > :sub_0_where_0) AS "big_orders_count" FROM "users"',
+            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "total" > :sub_0_where_0) '
+            . 'AS "big_orders_count" FROM "users"',
             $compiled->sql,
         );
         $this->assertSame(
@@ -81,7 +82,8 @@ class SelectSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "status" = :sub_0_where_0) AS "pending_count", (SELECT COUNT(*) FROM "orders" WHERE "status" = :sub_1_where_0) AS "done_count" FROM "users"',
+            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "status" = :sub_0_where_0) AS "pending_count", '
+            . '(SELECT COUNT(*) FROM "orders" WHERE "status" = :sub_1_where_0) AS "done_count" FROM "users"',
             $compiled->sql,
         );
         $this->assertSame(
@@ -103,7 +105,8 @@ class SelectSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "user_id" = :sub_0_where_0) AS "order_count" FROM "users" WHERE "active" = :where_0',
+            'SELECT "name", (SELECT COUNT(*) FROM "orders" WHERE "user_id" = :sub_0_where_0) AS "order_count" '
+            . 'FROM "users" WHERE "active" = :where_0',
             $compiled->sql,
         );
         $this->assertSame(
@@ -139,7 +142,8 @@ class SelectSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT (SELECT COUNT(*) FROM "orders" WHERE "total" > :sub_0_where_0 AND "status" IN (:sub_0_where_1_0, :sub_0_where_1_1)) AS "count" FROM "users"',
+            'SELECT (SELECT COUNT(*) FROM "orders" WHERE "total" > :sub_0_where_0 AND "status" IN '
+            . '(:sub_0_where_1_0, :sub_0_where_1_1)) AS "count" FROM "users"',
             $compiled->sql,
         );
         $this->assertSame(

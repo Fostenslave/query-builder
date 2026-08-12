@@ -27,7 +27,9 @@ class MysqlWhereRawBindingsCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM `users` WHERE age > :raw_0_0 AND age < :raw_0_1 AND custom_column = :raw_1_0 and custom_column2 = :raw_1_1 AND name_column = :name',
+            'SELECT * FROM `users` WHERE age > :raw_0_0 AND age < :raw_0_1 '
+            . 'AND custom_column = :raw_1_0 and custom_column2 = :raw_1_1 '
+            . 'AND name_column = :name',
             $compiled->sql,
         );
 

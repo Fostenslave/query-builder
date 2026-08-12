@@ -109,7 +109,9 @@ class FromSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT (SELECT COUNT(*) FROM "products" WHERE "status" = :sub_0_where_0) AS "product_count" FROM (SELECT * FROM "orders" WHERE "total" > :from_0_where_0) AS "o" WHERE "category" = :where_0',
+            'SELECT (SELECT COUNT(*) FROM "products" WHERE "status" = :sub_0_where_0) AS "product_count" '
+            . 'FROM (SELECT * FROM "orders" WHERE "total" > :from_0_where_0) AS "o" '
+            . 'WHERE "category" = :where_0',
             $compiled->sql,
         );
         $this->assertSame(
@@ -130,7 +132,8 @@ class FromSubCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT "o"."id", "o"."name" FROM (SELECT * FROM "orders" INNER JOIN "users" ON "orders"."user_id" = "users"."id" WHERE "users"."active" = :from_0_where_0) AS "o"',
+            'SELECT "o"."id", "o"."name" FROM (SELECT * FROM "orders" INNER JOIN "users" '
+            . 'ON "orders"."user_id" = "users"."id" WHERE "users"."active" = :from_0_where_0) AS "o"',
             $compiled->sql,
         );
         $this->assertSame(

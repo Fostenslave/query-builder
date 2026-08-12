@@ -93,7 +93,10 @@ class MysqlGrammarCompileTest extends TestCase
             offset: null,
         );
 
-        $this->assertSame('SELECT `id`, `name`, lower(name) as my_name FROM `users` WHERE `age` > :where_0 LIMIT 10', $compiled->sql);
+        $this->assertSame(
+            'SELECT `id`, `name`, lower(name) as my_name FROM `users` WHERE `age` > :where_0 LIMIT 10',
+            $compiled->sql,
+        );
         $this->assertSame([':where_0' => 18], $compiled->bindings);
     }
 
@@ -112,7 +115,10 @@ class MysqlGrammarCompileTest extends TestCase
             offset: null,
         );
 
-        $this->assertSame('SELECT * FROM `users` INNER JOIN `posts` ON `users`.`id` = `posts`.`user_id`', $compiled->sql);
+        $this->assertSame(
+            'SELECT * FROM `users` INNER JOIN `posts` ON `users`.`id` = `posts`.`user_id`',
+            $compiled->sql,
+        );
     }
 
     public function testCompileInsertWrapsTableWithBackticks(): void

@@ -73,7 +73,13 @@ final class ConditionGroupBuilder implements CompilableLogic
      */
     public function whereIn(string $column, array $values): self
     {
-        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::AND);
+        $this->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::AND
+        );
         return $this;
     }
 
@@ -84,7 +90,13 @@ final class ConditionGroupBuilder implements CompilableLogic
      */
     public function whereNotIn(string $column, array $values): self
     {
-        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::AND);
+        $this->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::AND
+        );
         return $this;
     }
 
@@ -95,7 +107,13 @@ final class ConditionGroupBuilder implements CompilableLogic
      */
     public function orWhereIn(string $column, array $values): self
     {
-        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        $this->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::OR
+        );
         return $this;
     }
 
@@ -106,31 +124,63 @@ final class ConditionGroupBuilder implements CompilableLogic
      */
     public function orWhereNotIn(string $column, array $values): self
     {
-        $this->wheres[] = new WhereInClause(column: $column, values: $values, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        $this->wheres[] = new WhereInClause(
+            column: $column,
+            values: $values,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::OR
+        );
         return $this;
     }
 
     public function whereBetween(string $column, mixed $from, mixed $to): self
     {
-        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false);
+        $this->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: false
+        );
         return $this;
     }
 
     public function whereNotBetween(string $column, mixed $from, mixed $to): self
     {
-        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true);
+        $this->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: true
+        );
         return $this;
     }
 
     public function orWhereBetween(string $column, mixed $from, mixed $to): self
     {
-        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: false, boolean: BooleanOperator::OR);
+        $this->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: false,
+            boolean: BooleanOperator::OR
+        );
         return $this;
     }
 
     public function orWhereNotBetween(string $column, mixed $from, mixed $to): self
     {
-        $this->wheres[] = new WhereBetweenClause(column: $column, from: $from, to: $to, prefix: $this->getWherePrefix(), not: true, boolean: BooleanOperator::OR);
+        $this->wheres[] = new WhereBetweenClause(
+            column: $column,
+            from: $from,
+            to: $to,
+            prefix: $this->getWherePrefix(),
+            not: true,
+            boolean: BooleanOperator::OR
+        );
         return $this;
     }
 

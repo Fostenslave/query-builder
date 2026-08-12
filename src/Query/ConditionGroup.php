@@ -20,8 +20,11 @@ final class ConditionGroup implements CompilableLogic
      * @param BooleanOperator $boolean
      * @param string $prefix
      */
-    public function __construct(callable $function, BooleanOperator $boolean = BooleanOperator::AND, string $prefix = 'where')
-    {
+    public function __construct(
+        callable $function,
+        BooleanOperator $boolean = BooleanOperator::AND,
+        string $prefix = 'where'
+    ) {
         $this->boolean = $boolean;
         $this->group = new ConditionGroupBuilder($prefix);
         $function($this->group);

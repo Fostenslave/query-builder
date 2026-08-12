@@ -166,7 +166,8 @@ class QueryBuilderCompileTest extends TestCase
         $compiled = $qb->compile();
 
         $this->assertSame(
-            'SELECT "id", "name" FROM "users" WHERE "age" >= :where_0 AND "active" = :where_1 ORDER BY "name" ASC LIMIT 5 OFFSET 10',
+            'SELECT "id", "name" FROM "users" WHERE "age" >= :where_0 AND "active" = :where_1 '
+            . 'ORDER BY "name" ASC LIMIT 5 OFFSET 10',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 18, ':where_1' => true], $compiled->bindings);

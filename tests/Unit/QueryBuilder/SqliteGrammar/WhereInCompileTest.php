@@ -132,7 +132,8 @@ class WhereInCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" WHERE "active" = :where_0 AND "role" IN (:where_1_0, :where_1_1) AND "age" > :where_2',
+            'SELECT * FROM "users" WHERE "active" = :where_0 AND "role" IN (:where_1_0, :where_1_1) '
+            . 'AND "age" > :where_2',
             $compiled->sql,
         );
         $this->assertSame(

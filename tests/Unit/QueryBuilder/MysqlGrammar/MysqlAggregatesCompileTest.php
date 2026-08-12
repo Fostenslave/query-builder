@@ -62,7 +62,8 @@ class MysqlAggregatesCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT user_id, SUM(amount) AS total FROM `orders` GROUP BY `user_id` HAVING SUM(amount) > :having_raw_0_0 AND SUM(amount) < :having_raw_0_1',
+            'SELECT user_id, SUM(amount) AS total FROM `orders` GROUP BY `user_id` '
+            . 'HAVING SUM(amount) > :having_raw_0_0 AND SUM(amount) < :having_raw_0_1',
             $compiled->sql,
         );
         $this->assertSame([':having_raw_0_0' => 100, ':having_raw_0_1' => 350], $compiled->bindings);
@@ -80,7 +81,8 @@ class MysqlAggregatesCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT user_id, COUNT(*) AS cnt FROM `orders` WHERE `status` = :where_0 GROUP BY `user_id` HAVING `cnt` > :having_0 ORDER BY `user_id` ASC LIMIT 5',
+            'SELECT user_id, COUNT(*) AS cnt FROM `orders` WHERE `status` = :where_0 '
+            . 'GROUP BY `user_id` HAVING `cnt` > :having_0 ORDER BY `user_id` ASC LIMIT 5',
             $compiled->sql,
         );
         $this->assertSame([':where_0' => 'completed', ':having_0' => 1], $compiled->bindings);

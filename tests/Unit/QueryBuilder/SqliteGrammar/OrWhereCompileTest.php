@@ -64,7 +64,8 @@ class OrWhereCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" WHERE "active" = :where_0 OR age > :raw_1_0 OR role = :raw_1_1 AND "deleted" != :where_2',
+            'SELECT * FROM "users" WHERE "active" = :where_0 OR age > :raw_1_0 '
+            . 'OR role = :raw_1_1 AND "deleted" != :where_2',
             $compiled->sql,
         );
     }
