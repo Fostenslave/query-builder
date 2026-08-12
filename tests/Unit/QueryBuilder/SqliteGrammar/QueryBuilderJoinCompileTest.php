@@ -25,7 +25,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" INNER JOIN "posts" ON users.id = posts.user_id',
+            'SELECT * FROM "users" INNER JOIN "posts" ON "users"."id" = "posts"."user_id"',
             $compiled->sql,
         );
         $this->assertSame([], $compiled->bindings);
@@ -38,7 +38,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" LEFT JOIN "profiles" ON users.id = profiles.user_id',
+            'SELECT * FROM "users" LEFT JOIN "profiles" ON "users"."id" = "profiles"."user_id"',
             $compiled->sql,
         );
     }
@@ -50,7 +50,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" RIGHT JOIN "roles" ON users.role_id = roles.id',
+            'SELECT * FROM "users" RIGHT JOIN "roles" ON "users"."role_id" = "roles"."id"',
             $compiled->sql,
         );
     }
@@ -64,8 +64,8 @@ class QueryBuilderJoinCompileTest extends TestCase
 
         $this->assertSame(
             'SELECT * FROM "users"'
-            . ' INNER JOIN "posts" ON users.id = posts.user_id'
-            . ' LEFT JOIN "comments" ON posts.id = comments.post_id',
+            . ' INNER JOIN "posts" ON "users"."id" = "posts"."user_id"'
+            . ' LEFT JOIN "comments" ON "posts"."id" = "comments"."post_id"',
             $compiled->sql,
         );
     }
@@ -80,7 +80,7 @@ class QueryBuilderJoinCompileTest extends TestCase
 
         $this->assertSame(
             'SELECT * FROM "users"'
-            . ' INNER JOIN "posts" ON users.id = posts.user_id'
+            . ' INNER JOIN "posts" ON "users"."id" = "posts"."user_id"'
             . ' WHERE "users"."age" > :where_0'
             . ' ORDER BY "posts"."created_at" DESC',
             $compiled->sql,
@@ -96,7 +96,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT "users"."name", "posts"."title" FROM "users" INNER JOIN "posts" ON users.id = posts.user_id',
+            'SELECT "users"."name", "posts"."title" FROM "users" INNER JOIN "posts" ON "users"."id" = "posts"."user_id"',
             $compiled->sql,
         );
     }
@@ -109,7 +109,7 @@ class QueryBuilderJoinCompileTest extends TestCase
             ->compile();
 
         $this->assertSame(
-            'SELECT * FROM "users" INNER JOIN "posts" ON users.id = posts.user_id LIMIT 10',
+            'SELECT * FROM "users" INNER JOIN "posts" ON "users"."id" = "posts"."user_id" LIMIT 10',
             $compiled->sql,
         );
     }

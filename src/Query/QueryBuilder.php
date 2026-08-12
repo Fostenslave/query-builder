@@ -12,7 +12,7 @@ class QueryBuilder implements QueryBuilderContract
 {
 
     /**
-     * @var array<Expression|SelectSub>
+     * @var array<Expression|SubQuery>
      */
     private(set) array $columns = [];
 
@@ -44,9 +44,11 @@ class QueryBuilder implements QueryBuilderContract
     private(set) ?int $limitValue = null;
     private(set) ?int $offsetValue = null;
 
+    private(set) SubQuery|null $fromSub = null;
+
     public function __construct(
         private(set) readonly Grammar   $grammar,
-        private(set) readonly string    $table,
+        private(set) readonly string|null    $table = null,
         private readonly ?QueryExecutor $executor = null,
     )
     {
@@ -55,7 +57,16 @@ class QueryBuilder implements QueryBuilderContract
     public function from(string $tableName): static
     {
         return clone($this, [
-            "table" => $tableName
+            'table' => $tableName,
+            'fromSub' => null,
+        ]);
+    }
+
+    public function fromSub(QueryBuilderContract $builder, string $alias): static
+    {
+        return clone ($this, [
+            "fromSub" => new SubQuery(clone $builder, $alias, 0, 'from'),
+            'table' => null,
         ]);
     }
 
@@ -82,8 +93,8 @@ class QueryBuilder implements QueryBuilderContract
     public function selectSub(QueryBuilderContract $builder, string $alias): static
     {
         $newBuilder = clone $this;
-        $subQueriesCount = count(array_filter($newBuilder->columns, fn ($column) => $column instanceof SelectSub));
-        $newBuilder->columns[] = new SelectSub($builder, $alias, $subQueriesCount);
+        $subQueriesCount = count(array_filter($newBuilder->columns, fn ($column) => $column instanceof SubQuery));
+        $newBuilder->columns[] = new SubQuery($builder, $alias, $subQueriesCount);
         return $newBuilder;
     }
 
@@ -234,6 +245,7 @@ class QueryBuilder implements QueryBuilderContract
     {
         return $this->grammar->compileSelect(
             table: $this->table,
+            fromSub: $this->fromSub,
             columns: $this->columns,
             joins: $this->joins,
             wheres: $this->wheres,
@@ -241,7 +253,8 @@ class QueryBuilder implements QueryBuilderContract
             groupBys: $this->groupBys,
             havings: $this->havings,
             limit: $this->limitValue,
-            offset: $this->offsetValue);
+            offset: $this->offsetValue
+        );
     }
 
     public function join(string $table, string $left, string $operator, string $right): static
@@ -267,13 +280,13 @@ class QueryBuilder implements QueryBuilderContract
 
     public function get(): array
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
         return $this->executor->fetchAll($this->compile());
     }
 
     public function first(): ?array
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
         return $this->executor->fetch(clone($this)->limit(1)->compile());
     }
 
@@ -295,34 +308,47 @@ class QueryBuilder implements QueryBuilderContract
 
     public function insert(array $values): int
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureTableExists();
+        $this->ensureQueryExecutorExists();
         $this->executor->execute($this->compileInsert($values));
         return (int)$this->executor->lastInsertId();
     }
 
     public function update(array $values): int
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureTableExists();
+        $this->ensureQueryExecutorExists();
         return $this->executor->execute($this->compileUpdate($values));
     }
 
     public function delete(): int
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureTableExists();
+        $this->ensureQueryExecutorExists();
         return $this->executor->execute($this->compileDelete());
     }
 
-    private function throwExceptionIfExecutorNotExists(): void
+    private function ensureQueryExecutorExists(): void
     {
         if (!$this->executor) {
             throw new RuntimeException('You need to pass QueryExecutor parameter to call this function');
         }
     }
 
+    private function ensureTableExists(): void
+    {
+        if (!$this->table) {
+            throw new RuntimeException(
+                'Cannot perform insert/update/delete: fromSub() replaces the table with a subquery.'
+                . ' Use table() or from() instead.'
+            );
+        }
+    }
+
 
     public function count(): int
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
         $builder = clone $this;
         $builder = $builder->selectRaw($this->grammar->getCountExpression());
         $row = $this->executor->fetch($builder->compile());
@@ -331,7 +357,7 @@ class QueryBuilder implements QueryBuilderContract
 
     public function exists(): bool
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
 
         $builder = clone($this, [
             "columns" => [new Expression('1')],
@@ -342,7 +368,7 @@ class QueryBuilder implements QueryBuilderContract
 
     public function paginate(int $page, int $perPage): array
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
         $builder = clone($this)->limit($perPage)->offset(($page - 1) * $perPage);
         return $builder->executor->fetchAll($builder->compile());
     }
@@ -404,7 +430,7 @@ class QueryBuilder implements QueryBuilderContract
 
     private function getAggregatedValue(string $column, string $functionName): mixed
     {
-        $this->throwExceptionIfExecutorNotExists();
+        $this->ensureQueryExecutorExists();
         $builder = clone($this, [
             'columns' => [],
         ]);
@@ -419,5 +445,4 @@ class QueryBuilder implements QueryBuilderContract
         $prefixCount = count($this->wheres);
         return "where_$prefixCount";
     }
-
 }

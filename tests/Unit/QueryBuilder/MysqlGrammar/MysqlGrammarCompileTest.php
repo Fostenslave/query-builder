@@ -25,6 +25,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'users',
+            fromSub: null,
             columns: [],
             joins: [],
             wheres: [],
@@ -42,6 +43,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'users as u',
+            fromSub: null,
             columns: [],
             joins: [],
             wheres: [],
@@ -59,6 +61,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'public.users',
+            fromSub: null,
             columns: [],
             joins: [],
             wheres: [],
@@ -76,6 +79,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'users',
+            fromSub: null,
             columns: [
                 new Expression('id'),
                 new Expression('name'),
@@ -98,6 +102,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'users',
+            fromSub: null,
             columns: [],
             joins: [new JoinClause('posts', JoinType::Inner, 'users.id', '=', 'posts.user_id')],
             wheres: [],
@@ -108,7 +113,7 @@ class MysqlGrammarCompileTest extends TestCase
             offset: null,
         );
 
-        $this->assertSame('SELECT * FROM `users` INNER JOIN `posts` ON users.id = posts.user_id', $compiled->sql);
+        $this->assertSame('SELECT * FROM `users` INNER JOIN `posts` ON `users`.`id` = `posts`.`user_id`', $compiled->sql);
     }
 
     public function testCompileInsertWrapsTableWithBackticks(): void
@@ -152,6 +157,7 @@ class MysqlGrammarCompileTest extends TestCase
     {
         $compiled = $this->grammar->compileSelect(
             table: 'na`ve',
+            fromSub: null,
             columns: [],
             joins: [],
             wheres: [],

@@ -29,7 +29,8 @@ final readonly class JoinClause implements Compilable
     {
         $joinType = $this->type->value;
         $wrappedTable = $grammar->wrapTable($this->table);
-
-        return new CompiledQuery("$joinType JOIN $wrappedTable ON $this->left $this->operator $this->right", []);
+        $wrappedLeft = $grammar->wrapTable($this->left);
+        $wrappedRight = $grammar->wrapTable($this->right);
+        return new CompiledQuery("$joinType JOIN $wrappedTable ON $wrappedLeft $this->operator $wrappedRight", []);
     }
 }

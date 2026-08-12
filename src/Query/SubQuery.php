@@ -6,13 +6,14 @@ namespace Fostenslave\QueryBuilder\Query;
 
 use Fostenslave\QueryBuilder\Grammar\Grammar;
 
-final readonly class SelectSub implements Compilable
+final readonly class SubQuery implements Compilable
 {
 
     public function __construct(
         private(set) QueryBuilderContract $builder,
         private(set) string $alias,
         private(set) int $currentSubIndex = 0,
+        private(set) string $prefix = 'sub',
     ) {
         if (empty($this->alias)) {
             throw new \InvalidArgumentException('Alias argument should be non empty');
@@ -21,7 +22,6 @@ final readonly class SelectSub implements Compilable
 
     public function compile(Grammar $grammar, int $sqlIndex = 0): CompiledQuery
     {
-
         $compiled = $this->recompileWithNewBindings($this->builder->compile(), $this->currentSubIndex);
         $wrappedAlias = $grammar->wrapTable($this->alias);
         return new CompiledQuery("($compiled->sql) AS $wrappedAlias", $compiled->bindings);
@@ -37,7 +37,7 @@ final readonly class SelectSub implements Compilable
         $replacements = [];
 
         foreach ($query->bindings as $key => $value) {
-            $newKey = ":sub_{$sqlIndex}_" . substr($key, 1);
+            $newKey = ":{$this->prefix}_{$sqlIndex}_" . substr($key, 1);
             $replacements[$key] = $newKey;
             $newBindings[$newKey] = $value;
         }

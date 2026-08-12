@@ -7,24 +7,39 @@ namespace Fostenslave\QueryBuilder\Grammar;
 use Fostenslave\QueryBuilder\Query\Compilable;
 use Fostenslave\QueryBuilder\Query\CompilableLogic;
 use Fostenslave\QueryBuilder\Query\CompiledQuery;
+use Fostenslave\QueryBuilder\Query\SubQuery;
 
 abstract class BaseGrammar implements Grammar
 {
 
     public function compileSelect(
-        string $table,
-        array $columns,
-        array $joins,
-        array $wheres,
-        array $orderBys,
-        array $groupBys,
-        array $havings,
-        ?int $limit,
-        ?int $offset,
+        string|null   $table,
+        SubQuery|null $fromSub,
+        array         $columns,
+        array         $joins,
+        array         $wheres,
+        array         $orderBys,
+        array         $groupBys,
+        array         $havings,
+        ?int          $limit,
+        ?int          $offset,
     ): CompiledQuery {
 
         $compiledSelects = $this->compileSelects($columns);
-        $sql = "SELECT " . $compiledSelects->sql ." FROM " . $this->wrapTable($table);
+        $tableQuery = '';
+
+        if ($table !== null) {
+            $tableQuery = $this->wrapTable($table);
+        }
+
+        $compiledFromSub = null;
+
+        if ($fromSub !== null) {
+            $compiledFromSub = $fromSub->compile($this);
+            $tableQuery = $compiledFromSub->sql;
+        }
+
+        $sql = "SELECT " . $compiledSelects->sql ." FROM " . $tableQuery;
         $compiledWheres = $this->compileWheres($wheres);
         $compiledHavings = $this->compileHavings($havings);
         $sql .= $this->compileJoins($joins)->sql;
@@ -34,9 +49,10 @@ abstract class BaseGrammar implements Grammar
         $sql .= $this->compileOrderBys($orderBys)->sql;
 
         $bindings = array_merge_recursive(
+            $compiledFromSub ? $compiledFromSub->bindings : [],
             $compiledSelects->bindings,
             $compiledWheres->bindings,
-            $compiledHavings->bindings
+            $compiledHavings->bindings,
         );
 
         if (isset($limit) && $limit >= 0) {
